@@ -2609,6 +2609,12 @@ mark.search-keyword {
 }
 .site-meta {
   padding: 20px 0;
+  background-image: url("/images/bg.png");
+}
+@media (min-width: 992px) {
+  .site-meta {
+    background-image: url("/images/bg.png");
+  }
 }
 .brand {
   padding: 0;

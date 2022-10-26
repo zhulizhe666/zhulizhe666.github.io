@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css"/>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhulizhe666.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一文搞懂导航电文（以Rinex3.04为例）一.什么是Rinex">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一文搞懂导航电文">
+<meta property="og:url" content="https://zhulizhe666.github.io/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/index.html">
+<meta property="og:site_name" content="擎天小猪の博客">
+<meta property="og:description" content="一文搞懂导航电文（以Rinex3.04为例）一.什么是Rinex">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zhulizhe666.github.io/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/image-20220930132004228.png">
+<meta property="og:image" content="https://zhulizhe666.github.io/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/image-20220930140604755.png">
+<meta property="article:published_time" content="2022-10-03T16:12:21.000Z">
+<meta property="article:modified_time" content="2022-10-08T15:19:21.321Z">
+<meta property="article:author" content="擎天小猪">
+<meta property="article:tag" content="技术">
+<meta property="article:tag" content="Rinex">
+<meta property="article:tag" content="卫星导航">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhulizhe666.github.io/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/image-20220930132004228.png">
+
+
+<link rel="canonical" href="https://zhulizhe666.github.io/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhulizhe666.github.io/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/","path":"2022/10/04/一文搞懂导航电文-1/","title":"一文搞懂导航电文"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>一文搞懂导航电文 | 擎天小猪の博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+<a target="_blank" rel="noopener" href="https://github.com/zhulizhe666" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">擎天小猪の博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">月が绮丽ですね</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87%EF%BC%88%E4%BB%A5Rinex3-04%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">一文搞懂导航电文（以Rinex3.04为例）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E4%BB%80%E4%B9%88%E6%98%AFRinex"><span class="nav-number">1.1.</span> <span class="nav-text">一.什么是Rinex</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-Rinex%E6%A0%BC%E5%BC%8F%E6%96%87%E4%BB%B6%E7%9A%84%E4%B8%8B%E8%BD%BD%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">二.Rinex格式文件的下载方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-Rinex%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87%E5%86%85%E5%AE%B9%E8%AF%B4%E6%98%8E"><span class="nav-number">1.3.</span> <span class="nav-text">三.Rinex导航电文内容说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89%E6%96%87%E4%BB%B6%E5%A4%B4"><span class="nav-number">1.3.1.</span> <span class="nav-text">（一）文件头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89%E6%95%B0%E6%8D%AE"><span class="nav-number">1.3.2.</span> <span class="nav-text">（二）数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B-%E6%80%BB%E7%BB%93"><span class="nav-number">1.4.</span> <span class="nav-text">四.总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94-%E8%AE%A1%E7%AE%97%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.5.</span> <span class="nav-text">五.计算程序</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="擎天小猪"
+      src="/images/avatar_hutao.jpeg">
+  <p class="site-author-name" itemprop="name">擎天小猪</p>
+  <div class="site-description" itemprop="description">为美好的世界送上祝福</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhulizhe666" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhulizhe666" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://duheru.github.io/" title="https:&#x2F;&#x2F;duheru.github.io&#x2F;" rel="noopener" target="_blank">duheru</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://macshuo.com/" title="http:&#x2F;&#x2F;macshuo.com&#x2F;" rel="noopener" target="_blank">MacTalk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://example.com/" title="http:&#x2F;&#x2F;example.com&#x2F;" rel="noopener" target="_blank">Title</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+  <a href="https://github.com/zhulizhe666" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhulizhe666.github.io/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar_hutao.jpeg">
+      <meta itemprop="name" content="擎天小猪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="擎天小猪の博客">
+      <meta itemprop="description" content="为美好的世界送上祝福">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="一文搞懂导航电文 | 擎天小猪の博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一文搞懂导航电文
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-10-04 00:12:21" itemprop="dateCreated datePublished" datetime="2022-10-04T00:12:21+08:00">2022-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-10-08 23:19:21" itemprop="dateModified" datetime="2022-10-08T23:19:21+08:00">2022-10-08</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span id="/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/" class="post-meta-item leancloud_visitors" data-flag-title="一文搞懂导航电文" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+  
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.6k</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="一文搞懂导航电文（以Rinex3-04为例）"><a href="#一文搞懂导航电文（以Rinex3-04为例）" class="headerlink" title="一文搞懂导航电文（以Rinex3.04为例）"></a>一文搞懂导航电文（以Rinex3.04为例）</h1><h2 id="一-什么是Rinex"><a href="#一-什么是Rinex" class="headerlink" title="一.什么是Rinex"></a>一.什么是Rinex</h2><span id="more"></span>
+<p>RINEX（Receiver Independent Exchange Format/与接收机无关的交换格式）是一种在GPS测量应用中普遍采用的标准数据格式。该格式采用文本文件存储数据，数据记录格式与接收机的制造厂商和具体型号无关。</p>
+<h2 id="二-Rinex格式文件的下载方式"><a href="#二-Rinex格式文件的下载方式" class="headerlink" title="二.Rinex格式文件的下载方式"></a>二.Rinex格式文件的下载方式</h2><p>附上网址：<br>1.<a href="https://link.zhihu.com/?target=ftp%3A//nfs.kasi.re.kr/">ftp://nfs.kasi.re.kr/</a>    与igs内容差不多，部分会缺，在电脑文件管理器中打开即可；</p>
+<p>2.<a target="_blank" rel="noopener" href="http://www.csno-tarc.cn/datacenter/ephemeris">http://www.csno-tarc.cn/datacenter/ephemeris</a>    选择广播星历下载即可，可选择日期，打开链接的方式同上；</p>
+<p>3.cddss官网下载(不建议)，需注册，下载比较繁琐；</p>
+<p>(注：美国出于信息安全的考虑，关闭了所有通过ftp下载igs,cddss上的数据的途径，网上搜索下载Rinex格式文件的网站是会看到很多ftp链接里带有igs,cddss的，作者试过全都打不开)</p>
+<p>4.<a target="_blank" rel="noopener" href="https://igs.org/formats-and-standards/">https://igs.org/formats-and-standards/</a>    下载Rinex各版本格式说明文件，根据需要下载即可。</p>
+<h2 id="三-Rinex导航电文内容说明"><a href="#三-Rinex导航电文内容说明" class="headerlink" title="三.Rinex导航电文内容说明"></a>三.Rinex导航电文内容说明</h2><p>Rinex格式的导航电文分为文件头和数据两部分，我们分别进行介绍：</p>
+<h3 id="（一）文件头"><a href="#（一）文件头" class="headerlink" title="（一）文件头"></a>（一）文件头</h3><p>我们先看看Rinex3.04版本的说明文档中对文件头格式的说明：</p>
+<p><img src="/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/image-20220930132004228.png" alt="image-20220930132004228"></p>
+<p>我们发现图表的最后一列有一列FORMAT,这里的FORMAT指<strong>【FORTRAN 95/2003标准中的读写格式定义】</strong></p>
+<p>具体有：</p>
+<ul>
+<li>An: 表示以n个字符宽度输出字符串</li>
+<li>Fn.m: 表示以n个字符宽输出浮点数，小数点后占m个字符宽度</li>
+<li>In[.m]: 表示以n个字符宽输出整数，至少输出m位数字（不足以“0”补齐），方括号表示可选，In表示输出占n个字符宽的整数，即n位整数，不足也不需以“0”补齐</li>
+<li>nX: 表示向右跳过n个字符的宽度</li>
+<li>Tn: 表示输出位置移动到本行第n列</li>
+</ul>
+<p>例如F9.2.11X就指表示以9个字符宽输出浮点数，小数点后占2个字符宽度，且向右跳过11个字符的宽度.</p>
+<p>在了解了格式之后我们给出一个Rinex格式的文件的文件头结合上图介绍：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">     <span class="attribute">3</span>.<span class="number">04</span>           N: GNSS NAV DATA    M: MIXED            RINEX VERSION / TYPE</span><br><span class="line"><span class="attribute">ssrcrin</span>-<span class="number">13</span>.<span class="number">7</span>.<span class="number">0</span>x                         <span class="number">20220101</span> <span class="number">000000</span> UTC PGM / RUN BY / DATE </span><br><span class="line">                                                            <span class="attribute">END</span> OF HEADER       </span><br></pre></td></tr></table></figure>
+<p>先看第一行，<strong>“RINEX VERSION / TYPE”</strong>说明第一行写的是Rinex格式的版本和该文件的类型，”3.04”<strong>说明该文件是</strong>3.04版本的，我们想要读懂它就需要看Rinex304的说明文档，<strong>“N: GNSS NAV DATA”</strong>说明这是文件存的是导航电文数据，<strong>“M: MIXED”</strong>说明该文档存有多个导航系统的数据；</p>
+<p>第二行<strong>“PGM / RUN BY / DATE”</strong>给出了创建当前文件的程序的名称是ssrcrin-13.7.0x，没有写创建当前文件的机构的名称，创建当前文件的时间是20220101 000000，格式是”yyyymmdd hhmmss”,采用的时间是”UTC”时间，即协调世界时；</p>
+<p>第三行<strong>“END OF HEADER”</strong>说明文件头结束。</p>
+<h3 id="（二）数据"><a href="#（二）数据" class="headerlink" title="（二）数据"></a>（二）数据</h3><p>下图是Rinex3.04版本的说明文档中对数据格式的说明：</p>
+<p><img src="/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/image-20220930140604755.png" alt="image-20220930140604755"></p>
+<p>我们结合一颗GPS卫星的数据进行分析：</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">G24 2022 01 01 02 00 00 2.766801044345E<span class="string">-04</span> 7.958078640513E<span class="string">-13</span> 0.000000000000E<span class="string">+00</span></span><br><span class="line">     7.200000000000E<span class="string">+01</span><span class="string">-5</span>.281250000000E<span class="string">+00</span> 5.369152218170E<span class="string">-09</span> 7.382124868389E<span class="string">-01</span></span><br><span class="line">    <span class="string">-3</span>.110617399216E<span class="string">-07</span> 1.224164501764E<span class="string">-02</span> 7.973983883858E<span class="string">-06</span> 5.153692775726E<span class="string">+03</span></span><br><span class="line">     5.256000000000E<span class="string">+05</span><span class="string">-8</span>.381903171539E<span class="string">-08</span> 2.017266027501E<span class="string">+00</span> 1.136213541031E<span class="string">-07</span></span><br><span class="line">     9.341236686746E<span class="string">-01</span> 2.133437500000E<span class="string">+02</span> 7.961493677997E<span class="string">-01</span><span class="string">-8</span>.411778955786E<span class="string">-09</span></span><br><span class="line">    <span class="string">-7</span>.186013612025E<span class="string">-10</span> 1.000000000000E<span class="string">+00</span> 2.190000000000E<span class="string">+03</span> 0.000000000000E<span class="string">+00</span></span><br><span class="line">     2.000000000000E<span class="string">+00</span> 0.000000000000E<span class="string">+00</span> 2.328306436539E<span class="string">-09</span> 7.200000000000E<span class="string">+01</span></span><br><span class="line">     5.184180000000E<span class="string">+05</span> 4.000000000000E<span class="string">+00</span></span><br></pre></td></tr></table></figure>
+<p>解算卫星在WGS-84坐标系的坐标的参数有：</p>
+<script type="math/tex; mode=display">
+t_{oe}  星历参考时间</script><script type="math/tex; mode=display">
+\sqrt{A}卫星轨道半长轴A的平方根</script><script type="math/tex; mode=display">
+e卫星轨道偏心率</script><script type="math/tex; mode=display">
+i_0轨道倾角</script><script type="math/tex; mode=display">
+\varOmega _0周内时为0时的轨道升交点赤经</script><script type="math/tex; mode=display">
+\omega近地点角距</script><script type="math/tex; mode=display">
+M_0平近点角</script><script type="math/tex; mode=display">
+\varDelta _n卫星平均角速度校正值</script><script type="math/tex; mode=display">
+\dot{i}轨道倾角的变化率</script><script type="math/tex; mode=display">
+\varOmega轨道升交点赤经的变化率</script><script type="math/tex; mode=display">
+C_{uc}升交点角距余弦调和校正振幅</script><script type="math/tex; mode=display">
+C_{us}升交点角距正弦调和校正振幅</script><script type="math/tex; mode=display">
+C_{rc}轨道半径余弦调和校正振幅</script><script type="math/tex; mode=display">
+C_{rs}轨道半径正弦调和校正振幅</script><script type="math/tex; mode=display">
+C_{ic}轨道倾角余弦调和校正振幅</script><script type="math/tex; mode=display">
+C_{is}轨道倾角正弦调和校正振幅</script><p>G24是卫星编号,后面4个数据分别是Toc、卫星钟差、卫星钟漂、卫星钟漂变化率,第二行是第二行4个数据分别是IODE、Crs、Δ n和M0，并在后面标好了单位，如Crs的单位是(meters)米，M0的单位是(radians)弧度。之后各行的数据对照官方文档一一对应即可。</p>
+<h2 id="四-总结"><a href="#四-总结" class="headerlink" title="四.总结"></a>四.总结</h2><p>导航电文不难看懂，难的是耐下心来对照官方说明文档搞懂各行各个数据的意义，在读懂了导航电文的含义后，接下来的步骤就是解算卫星在WGS-84坐标系下的的坐标，我会在之后的文章中介绍。本文章仅代表个人观点和看法，难免会有错误和疏漏，如有错误希望大家可以和我指出ღ( ´･ᴗ･` )。</p>
+<h2 id="五-计算程序"><a href="#五-计算程序" class="headerlink" title="五.计算程序"></a>五.计算程序</h2><p>计算部分按公式一步步推就行了，作者很懒，详细的步骤就不给出了，值得一提的是树上给的公式和常量很多是错的，所以建议根据PPT上的公式进行程序的编写，需要详细步骤的我推荐一下这篇文章：<a target="_blank" rel="noopener" href="https://blog.csdn.net/tyst08/article/details/102462810，公式都是正确的，写的很详细很不错，可以一步步跟进编写。">https://blog.csdn.net/tyst08/article/details/102462810，公式都是正确的，写的很详细很不错，可以一步步跟进编写。</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+  
+    <div style="text-align:center;color: #555;font-size:18px;">End~~ <i class="fa fa-paw"></i> 撒花ฅ&gt;ω&lt;*ฅ花撒</div>
+  
+</div>
+
+      
+    </div>
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"><i class="fa fa-tag"></i>
+ 技术</a>
+              <a href="/tags/Rinex/" rel="tag"><i class="fa fa-tag"></i>
+ Rinex</a>
+              <a href="/tags/%E5%8D%AB%E6%98%9F%E5%AF%BC%E8%88%AA/" rel="tag"><i class="fa fa-tag"></i>
+ 卫星导航</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/09/27/python-requests%E5%BA%93%E5%85%A5%E9%97%A8/" rel="prev" title="python requests库入门">
+                  <i class="fa fa-chevron-left"></i> python requests库入门
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/10/06/python%E7%88%AC%E8%99%AB%E4%B9%8Bre%E6%A8%A1%E5%9D%97/" rel="next" title="python爬虫之re模块">
+                  python爬虫之re模块 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="valine-comments"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">擎天小猪</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">25k</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共11.1k字</span>
+</div>
+    </div>
+  </footer>
+
+  <script src="https://soyawww.github.io/live2d/autoload.js"></script>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","cdn":"//https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+
+
+<script class="next-config" data-name="valine" type="application/json">{"enable":true,"appId":"wJLcM7FPVSGJ1ZLuSOemre8u-gzGzoHsz","appKey":"dAFwcWfz4iDB5gVZIYw1E0uL","serverURLs":"https://wjlcm7fp.lc-cn-n1-shared.com","placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":true,"comment_count":true,"recordIP":true,"enableQQ":true,"requiredFields":[],"el":"#valine-comments","path":"/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/"}</script>
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.valine.el)
+    .then(() => NexT.utils.getScript(
+      'https://fastly.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js',
+      { condition: window.Valine }
+    ))
+    .then(() => {
+      new Valine(CONFIG.valine);
+    });
+});
+</script>
+
+</body>
+  <script src="https://zhulizhe666.github.io/live2d/autoload.js"></script>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>
+
+<script src="live2d-widget/autoload.js"></script>
+
+<!-- 雪花特效2 -->
+<script type="text/javascript" src="/js/snow2.js"></script>

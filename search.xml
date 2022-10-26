@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Beautiful Soup:让爬虫变得更beautiful</title>
+    <url>/2022/10/26/Beautiful-Soup-%E8%AE%A9%E7%88%AC%E8%99%AB%E5%8F%98%E5%BE%97%E6%9B%B4beautiful/</url>
+    <content><![CDATA[<p>Beautiful Soup是一个可以从HTML或XML文件中提取数据的Python库，在熟练掌握后，它能帮你很轻松的实现文档中某一内容的查找定位。</p>
+<span id="more"></span>
+<h2 id="一-bs4模块的安装和Beautiful-Soup的引用"><a href="#一-bs4模块的安装和Beautiful-Soup的引用" class="headerlink" title="一.bs4模块的安装和Beautiful Soup的引用"></a>一.bs4模块的安装和Beautiful Soup的引用</h2><p>bs4模块不是系统自带的，个人喜欢用pip下载方便又快捷，打开电脑的命令行窗口，输入：</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">pip <span class="keyword">install</span> bs4</span><br></pre></td></tr></table></figure>
+<p>即可，在下载好bs4模块后，我们想调用里面的Beautful Soup，只需要在开头加上：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br></pre></td></tr></table></figure>
+<p>注：BeautifulSoup不仅支持HTML解析器，还支持lxml,html5lib等第三方的解析器，但这些解析器需要另外下载，下表是<a href="https://beautifulsoup.cn/">BeautfulSoup中文文档</a>对其他一些解析器的介绍，本文之后的内容仅采用最基本的HTML解析器，其他的请大家自行上网查找资料，本文不做过多介绍：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">解析器</th>
+<th style="text-align:left">使用方法</th>
+<th style="text-align:left">优势</th>
+<th style="text-align:left">劣势</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Python标准库</td>
+<td style="text-align:left"><code>BeautifulSoup(markup, &quot;html.parser&quot;)</code></td>
+<td style="text-align:left">Python的内置标准库执行速度适中文档容错能力强</td>
+<td style="text-align:left">Python 2.7.3 or 3.2.2)前 的版本中文档容错能力差</td>
+</tr>
+<tr>
+<td style="text-align:left">lxml HTML 解析器</td>
+<td style="text-align:left"><code>BeautifulSoup(markup, &quot;lxml&quot;)</code></td>
+<td style="text-align:left">速度快文档容错能力强</td>
+<td style="text-align:left">需要安装C语言库</td>
+</tr>
+<tr>
+<td style="text-align:left">lxml XML 解析器</td>
+<td style="text-align:left"><code>BeautifulSoup(markup, [&quot;lxml-xml&quot;])``BeautifulSoup(markup, &quot;xml&quot;)</code></td>
+<td style="text-align:left">速度快唯一支持XML的解析器</td>
+<td style="text-align:left">需要安装C语言库</td>
+</tr>
+<tr>
+<td style="text-align:left">html5lib</td>
+<td style="text-align:left"><code>BeautifulSoup(markup, &quot;html5lib&quot;)</code></td>
+<td style="text-align:left">最好的容错性以浏览器的方式解析文档生成HTML5格式的文档</td>
+<td style="text-align:left">速度慢不依赖外</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="二-BeautifulSoup的正确打开方式"><a href="#二-BeautifulSoup的正确打开方式" class="headerlink" title="二.BeautifulSoup的正确打开方式"></a>二.BeautifulSoup的正确打开方式</h2><p>我们既然都把BeautifulSoup从模块里单独引用出来了，说明其一定有着非常重要的作用，我们得到一段HTML文本，例如：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">html_doc = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&#x27;s story&lt;/title&gt;&lt;/head&gt;</span></span><br><span class="line"><span class="string">&lt;body&gt;</span></span><br><span class="line"><span class="string">&lt;p class=&quot;title&quot;&gt;&lt;b&gt;The Dormouse&#x27;s story&lt;/b&gt;&lt;/p&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;p class=&quot;story&quot;&gt;Once upon a time there were three little sisters; and their names were</span></span><br><span class="line"><span class="string">&lt;a href=&quot;http://example.com/elsie&quot; class=&quot;sister&quot; id=&quot;link1&quot;&gt;Elsie&lt;/a&gt;,</span></span><br><span class="line"><span class="string">&lt;a href=&quot;http://example.com/lacie&quot; class=&quot;sister&quot; id=&quot;link2&quot;&gt;Lacie&lt;/a&gt; and</span></span><br><span class="line"><span class="string">&lt;a href=&quot;http://example.com/tillie&quot; class=&quot;sister&quot; id=&quot;link3&quot;&gt;Tillie&lt;/a&gt;;</span></span><br><span class="line"><span class="string">and they lived at the bottom of a well.&lt;/p&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;p class=&quot;story&quot;&gt;...&lt;/p&gt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+<p>我们在用尽各种手段得到这段文本后，首先要对它进行解析：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">page=BeautifulSoup(html_doc,<span class="string">&quot;html.parser&quot;</span>,from_encoding=<span class="string">&#x27;utf-8&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>想要创建一个BeautifulSoup对象，需要三个参数，第一个是待解析的HTML文本，第二个是解析器类型，第三个是HTML文本的编码类型。它将HTNL文档转化为一棵标签树，所有的节点可分为以下几类</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>基本元素</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tag</td>
+<td>标签，最基本的信息组织单位，分别用<>和</>标明开头和结尾</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>标签的名字，<p>..</p>的名字是 p，格式：<tag>.name</tag></td>
+</tr>
+<tr>
+<td>Attributes</td>
+<td>标签的属性，字典形式组成，格式：<tag>.attrs</tag></td>
+</tr>
+<tr>
+<td>NavigableString</td>
+<td>标签内非属性字符串, <>...</>中字符串，格式：<tag>.string</tag></td>
+</tr>
+<tr>
+<td>Comment</td>
+<td>标签内字符串的注释部分，一种特殊的comment类型</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>操作这棵标签树的最简单的办法是使用tag_name,用法<code>tag.tag_name</code>,例如：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">page.head</span><br><span class="line"><span class="comment"># &#x27;&#x27;&#x27;&lt;head&gt;&lt;title&gt;The Dormouse&#x27;s story&lt;/title&gt;&lt;/head&gt;&#x27;&#x27;&#x27;</span></span><br><span class="line">page.a</span><br><span class="line"><span class="comment"># &#x27;&#x27;&#x27;&lt;a class=&quot;sister&quot; href=&quot;http://example.com/elsie&quot; id=&quot;link1&quot;&gt;Elsie&lt;/a&gt;&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>但用此方法只能找到第一个标签，想要找到之后的标签以及全部的标签，就需要用到爬虫中很常用的BeautifulSoup类的两个函数。</p>
+<h2 id="三-find和find-all"><a href="#三-find和find-all" class="headerlink" title="三.find和find_all"></a>三.find和find_all</h2><h3 id="一-find函数"><a href="#一-find函数" class="headerlink" title="(一) find函数"></a>(一) find函数</h3><p>find函数之返回第一个匹配的对象，基本语法为：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">find(tag, attributes, recursive, text, keywords)</span><br></pre></td></tr></table></figure>
+<p>我们在平常一般只用前2个参数：tag，attributes。</p>
+<p><strong>tag</strong></p>
+<p>需要搜素的标签名</p>
+<p><strong>attributes</strong><br>属性参数 attributes 是用一个 Python <strong>字典</strong>封装一个标签的若干属性和对应的属性值。例如</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">page.find(<span class="string">&#x27;a&#x27;</span>,&#123;<span class="string">&quot;id&quot;</span>:<span class="string">&quot;link1&quot;</span>&#125;)返回</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;&lt;a href=&quot;http://example.com/elsie&quot; class=&quot;sister&quot; id=&quot;link1&quot;&gt;Elsie&lt;/a&gt;&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><strong>recursive</strong></p>
+<p>递归参数recursive是一个布尔变量，如果recursive设置为True,调用该函数会从所有层级的标签中查找出符合要求的，而如果设置为False,就只会从一级标签中查找， recursive 默认值是 True ，一般不需要设置。</p>
+<p><strong>text</strong><br>文本参数 text 有点不同，它是用标签的文本内容去匹配，而不是用标签的属性。</p>
+<p><strong>keywords</strong><br>可以让你选择那些具有指定属性的标签，其实和用attributes传参基本一致</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#用keyword</span></span><br><span class="line">page.find(<span class="string">&#x27;a&#x27;</span>,<span class="built_in">id</span>=<span class="string">&quot;link1&quot;</span>)</span><br><span class="line"><span class="comment">#用attributes</span></span><br><span class="line">page.find(<span class="string">&#x27;a&#x27;</span>,&#123;<span class="string">&quot;id&quot;</span>:<span class="string">&quot;link1&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>在写属性名时，如果属性名和python的保留关键字相同，会出现报错的情况，如class,这时候我们有两种办法解决：</p>
+<ul>
+<li>在attrs属性用字典的方式进行参数传递</li>
+<li>BeautifulSoup自带的特别关键字<strong>class_</strong></li>
+</ul>
+<h3 id="二-find-all函数"><a href="#二-find-all函数" class="headerlink" title="(二).find_all函数"></a>(二).find_all函数</h3><p>与find不同，find_all返回所有匹配到的结果,并将匹配结果打包成列表的形式返回。基本语法：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">find_all(tag, attributes, recursive, text, limit, keywords)</span><br></pre></td></tr></table></figure>
+<p>基本与find相同，只是多了一个limit参数</p>
+<p><strong>limit</strong></p>
+<p>范围限制参数 limit ，显然只用于 find_all 方法。 find 其实等价于 find_all 的 limit 等于1 时的情形。如果你只对网页中获取的前 x 项结果感兴趣，就可以设置它.</p>
+<h2 id="四-获得你想要的值"><a href="#四-获得你想要的值" class="headerlink" title="四.获得你想要的值"></a>四.获得你想要的值</h2><p>我们在通过find和find_all方法找到了你想要找的标签后，该如何获得标签内你想要的某个属性值或者是文本呢？这里我们介绍两个方法get和get_text,例如我们定位到了标签<code>tag=&lt;a href=&quot;http://example.com/elsie&quot; class=&quot;sister&quot; id=&quot;link1&quot;&gt;Elsie&lt;/a&gt;</code>,我们想要获取其href属性的地址，只需要</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tag.get(<span class="string">&quot;href&quot;</span>) <span class="comment">#参数为属性名</span></span><br></pre></td></tr></table></figure>
+<p>如果我们需要的是标签的文本值Elsie，只需要</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">tag.get_text（）</span><br></pre></td></tr></table></figure>
+<p>怎么样是不是很简单呢？</p>
+<p>关于BeautifulSoup我就介绍这么多啦，感谢各位观看！！</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2022/02/02/hello-world/</url>
+    <content><![CDATA[<p>欢迎来到我的博客，在这里我会分享我的学习心得体会，偶尔也会分享一些其他内容，感谢各位支持ღ( ´･ᴗ･` )！！</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>python requests库入门</title>
+    <url>/2022/09/27/python-requests%E5%BA%93%E5%85%A5%E9%97%A8/</url>
+    <content><![CDATA[<h1 id="Python-request库入门"><a href="#Python-request库入门" class="headerlink" title="Python request库入门"></a>Python request库入门</h1><h2 id="一-简介与安装"><a href="#一-简介与安装" class="headerlink" title="一.简介与安装"></a>一.简介与安装</h2><p>Requests 是⽤Python语⾔编写，基于urllib，采⽤Apache2 Licensed开源协议的 HTTP 库，该模块主要用来发送 HTTP 请求。</p>
+<span id="more"></span>
+<p>下载建议使用pip，用电脑打开命令行窗口，输入以下命令：</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">pip <span class="keyword">install</span> requests</span><br></pre></td></tr></table></figure>
+<p>库下载的慢的话可以换源，换源的方法如下：</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pip install +库名 -i +源</span><br><span class="line"><span class="symbol">eg:</span>    pip install requests -i <span class="symbol">http:</span>/<span class="regexp">/mirrors.aliyun.com/pypi</span><span class="regexp">/simple/</span></span><br></pre></td></tr></table></figure>
+<p>几个国内源：</p>
+<p>阿里云 <a href="https://links.jianshu.com/go?to=http%3A%2F%2Fmirrors.aliyun.com%2Fpypi%2Fsimple%2F">http://mirrors.aliyun.com/pypi/simple/</a><br>中国科技大学 <a href="https://links.jianshu.com/go?to=https%3A%2F%2Fpypi.mirrors.ustc.edu.cn%2Fsimple%2F">https://pypi.mirrors.ustc.edu.cn/simple/</a><br>豆瓣(douban) <a href="https://links.jianshu.com/go?to=http%3A%2F%2Fpypi.douban.com%2Fsimple%2F">http://pypi.douban.com/simple/</a><br>清华大学 <a href="https://links.jianshu.com/go?to=https%3A%2F%2Fpypi.tuna.tsinghua.edu.cn%2Fsimple%2F">https://pypi.tuna.tsinghua.edu.cn/simple/</a><br>中国科学技术大学 <a href="https://links.jianshu.com/go?to=http%3A%2F%2Fpypi.mirrors.ustc.edu.cn%2Fsimple%2F">http://pypi.mirrors.ustc.edu.cn/simple/</a></p>
+<h2 id="二-使用"><a href="#二-使用" class="headerlink" title="二.使用"></a>二.使用</h2><p>关于获取网站数据，requests库提供了get和post两种方法，post是被设计用来向上放东西的，而get是被设计用来从服务器取东西的，如果你需要的数据在网页源代码中有，使用get；如果你需要的数据在网页源代码中没有，是从网络中获取的，那么选择post，下面以get为例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;一次简单的爬虫尝试&quot;</span>) <span class="comment">#爬取百度信息</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> requests  <span class="comment">#导入requests库</span></span><br><span class="line"></span><br><span class="line">url=<span class="string">&quot;https://www.baidu.com&quot;</span> <span class="comment">#要爬取的网站地址</span></span><br><span class="line"></span><br><span class="line">resp=requests.get(url) <span class="comment">#用requests获取网站信息</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(resp.text) <span class="comment">#打印信息</span></span><br></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">一次简单的爬虫尝试</span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--STATUS OK--&gt;</span><span class="tag">&lt;<span class="name">html</span>&gt;</span> <span class="tag">&lt;<span class="name">head</span>&gt;</span><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">content-type</span> <span class="attr">content</span>=<span class="string">text/html;charset</span>=<span class="string">utf-8</span>&gt;</span><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">X-UA-Compatible</span> <span class="attr">content</span>=<span class="string">IE</span>=<span class="string">Edge</span>&gt;</span><span class="tag">&lt;<span class="name">meta</span> <span class="attr">content</span>=<span class="string">always</span> <span class="attr">name</span>=<span class="string">referrer</span>&gt;</span><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">stylesheet</span> <span class="attr">type</span>=<span class="string">text/css</span> <span class="attr">href</span>=<span class="string">https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache/bdorz/baidu.min.css</span>&gt;</span><span class="tag">&lt;<span class="name">title</span>&gt;</span>百度一下，你就知道<span class="tag">&lt;/<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span> <span class="tag">&lt;<span class="name">body</span> <span class="attr">link</span>=<span class="string">#0000cc</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">wrapper</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">head</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">head_wrapper</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">s_form</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">s_form_wrapper</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">lg</span>&gt;</span> <span class="tag">&lt;<span class="name">img</span> <span class="attr">hidefocus</span>=<span class="string">true</span> <span class="attr">src</span>=<span class="string">//www.baidu.com/img/bd_logo1.png</span> <span class="attr">width</span>=<span class="string">270</span> <span class="attr">height</span>=<span class="string">129</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">form</span> <span class="attr">name</span>=<span class="string">f</span> <span class="attr">action</span>=<span class="string">//www.baidu.com/s</span> <span class="attr">class</span>=<span class="string">fm</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">bdorz_come</span> <span class="attr">value</span>=<span class="string">1</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">ie</span> <span class="attr">value</span>=<span class="string">utf-8</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">f</span> <span class="attr">value</span>=<span class="string">8</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">rsv_bp</span> <span class="attr">value</span>=<span class="string">1</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">rsv_idx</span> <span class="attr">value</span>=<span class="string">1</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">tn</span> <span class="attr">value</span>=<span class="string">baidu</span>&gt;</span><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;bg s_ipt_wr&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">kw</span> <span class="attr">name</span>=<span class="string">wd</span> <span class="attr">class</span>=<span class="string">s_ipt</span> <span class="attr">value</span> <span class="attr">maxlength</span>=<span class="string">255</span> <span class="attr">autocomplete</span>=<span class="string">off</span> <span class="attr">autofocus</span>=<span class="string">autofocus</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;bg s_btn_wr&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">submit</span> <span class="attr">id</span>=<span class="string">su</span> <span class="attr">value</span>=<span class="string">百度一下</span> <span class="attr">class</span>=<span class="string">&quot;bg s_btn&quot;</span> <span class="attr">autofocus</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span> <span class="tag">&lt;/<span class="name">form</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">u1</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://news.baidu.com</span> <span class="attr">name</span>=<span class="string">tj_trnews</span> <span class="attr">class</span>=<span class="string">mnav</span>&gt;</span>新闻<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">https://www.hao123.com</span> <span class="attr">name</span>=<span class="string">tj_trhao123</span> <span class="attr">class</span>=<span class="string">mnav</span>&gt;</span>hao123<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://map.baidu.com</span> <span class="attr">name</span>=<span class="string">tj_trmap</span> <span class="attr">class</span>=<span class="string">mnav</span>&gt;</span>地图<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://v.baidu.com</span> <span class="attr">name</span>=<span class="string">tj_trvideo</span> <span class="attr">class</span>=<span class="string">mnav</span>&gt;</span>视频<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://tieba.baidu.com</span> <span class="attr">name</span>=<span class="string">tj_trtieba</span> <span class="attr">class</span>=<span class="string">mnav</span>&gt;</span>贴吧<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">noscript</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://www.baidu.com/bdorz/login.gif?login&amp;amp;tpl</span>=<span class="string">mn&amp;amp;u</span>=<span class="string">http%3A%2F%2Fwww.baidu.com%2f%3fbdorz_come%3d1</span> <span class="attr">name</span>=<span class="string">tj_login</span> <span class="attr">class</span>=<span class="string">lb</span>&gt;</span>登录<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;/<span class="name">noscript</span>&gt;</span> <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;&lt;a href=&quot;http://www.baidu.com/bdorz/login.gif?login&amp;tpl=mn&amp;u=&#x27;</span>+ <span class="built_in">encodeURIComponent</span>(<span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">href</span>+ (<span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">search</span> === <span class="string">&quot;&quot;</span> ? <span class="string">&quot;?&quot;</span> : <span class="string">&quot;&amp;&quot;</span>)+ <span class="string">&quot;bdorz_come=1&quot;</span>)+ <span class="string">&#x27;&quot; name=&quot;tj_login&quot; class=&quot;lb&quot;&gt;登录&lt;/a&gt;&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">                </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">//www.baidu.com/more/</span> <span class="attr">name</span>=<span class="string">tj_briicon</span> <span class="attr">class</span>=<span class="string">bri</span> <span class="attr">style</span>=<span class="string">&quot;display: block;&quot;</span>&gt;</span>更多产品<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">ftCon</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">ftConw</span>&gt;</span> <span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">lh</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://home.baidu.com</span>&gt;</span>关于百度<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://ir.baidu.com</span>&gt;</span>About Baidu<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;/<span class="name">p</span>&gt;</span> <span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">cp</span>&gt;</span><span class="symbol">&amp;copy;</span>2017<span class="symbol">&amp;nbsp;</span>Baidu<span class="symbol">&amp;nbsp;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://www.baidu.com/duty/</span>&gt;</span>使用百度前必读<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="symbol">&amp;nbsp;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://jianyi.baidu.com/</span> <span class="attr">class</span>=<span class="string">cp-feedback</span>&gt;</span>意见反馈<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="symbol">&amp;nbsp;</span>京ICP证030173号<span class="symbol">&amp;nbsp;</span> <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">//www.baidu.com/img/gs.gif</span>&gt;</span> <span class="tag">&lt;/<span class="name">p</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">body</span>&gt;</span> <span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们发现打印出来的内容很复杂看不懂，没有关系，因为这是HTML（超文本语言）,我们之后会简单介绍，现在回到程序自身，</p>
+<p>get函数有几个参数：</p>
+<p>1.url:即我们请求的网站的网址，是必要参数，填在第一位；</p>
+<p>2.headers:可选参数，请求头文件，输入要求字典形式，有时我们在打印网页源代码时，没有报错，但打印不出信息，可能就是User-Agent的问题，这时就需要添加一个带User-Agent的headers文件；</p>
+<p>3.params:可选参数，请求参数，输入要求字典形式，如在搜索时设置kw=小狗；</p>
+<p>4.verify：可选参数，ssl证书验证，输入是bool类型，有时候在访问网站时会报SSLError,这时候我们就可以通过设置verify参数值为false,在请求是不验证网站的ca证书，设置完以后运行时可能会出现warning，如果看着不顺眼，可以加上</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib3</span><br><span class="line">urllib3.disable_warnings() </span><br></pre></td></tr></table></figure>
+<p>去掉警告；</p>
+<p>5.timeout:可选参数，get再申请访问时，所用时间如果超过timeout设置的值，就会返回timeoutError；</p>
+<p>6.proxies:可选参数，有时候因为一些原因，你的IP地址可能会被网站封了，禁止你访问，这时我们就需要用该参数，使用代理IP访问网站；</p>
+<p>在用get申请访问时，有时会因为网络不良或连接不好无法请求到网站,遇到这种情况可以在get前加上<code>requests.adapters.DEFAULT_RETRIES = 5</code></p>
+<p>设置如果连接不上重新连接的次数，可以搭配get的timeout参数 使用，设置例如30s连接不上重新连接。</p>
+<p>使用requests方法后，会返回一个response对象，其存储了服务器响应的内容，在输出resp响应时，如果选择直接输出，输出的是状态码：如果输出<Response [200]>，则说明连接网站成功，如果输出<Response [400]>，则说明没有连接上。</Response></Response></p>
+<p>在输出resp时，也可以选择输出resp.text，输出响应的内容，也就是申请访问的网页的源代码，有时我们在输出的时候得到的结果中会有很多看不懂的字符，那是因为windows系统默认的字符集是GBK，而网页源代码所使用的字符集并不一定是GBK，例如在上面的输出中我们发现在第二行有一个 <code>charset=utf-8</code> ，说明百度网页源代码使用的字符集是utf-8，这时我们只要在输出之前设置<code>resp.encoding=&quot;utf-8&quot;</code>即可正确输出源代码内容。</p>
+<h2 id="三-第一次反爬"><a href="#三-第一次反爬" class="headerlink" title="三.第一次反爬"></a>三.第一次反爬</h2><p>我们用电脑浏览器登录www.baidu.com，鼠标右键查看网页源代码，发现看到的源代码很长很长，和我们之前获得的根本不一样，</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">百度网页实际源代码部分截取</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;head&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;s_top_wrap&quot;</span> <span class="attr">class</span>=<span class="string">&quot;s-top-wrap s-isindex-wrap &quot;</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;s-top-nav&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;s-center-box&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;u&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">&quot;toindex&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/&quot;</span>&gt;</span>百度首页<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascript:;&quot;</span> <span class="attr">name</span>=<span class="string">&quot;tj_settingicon&quot;</span> <span class="attr">class</span>=<span class="string">&quot;pf&quot;</span>&gt;</span>设置<span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">&quot;c-icon c-icon-triangle-down&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;https://passport.baidu.com/v2/?login&amp;tpl=mn&amp;u=http%3A%2F%2Fwww.baidu.com%2F&amp;sms=5&quot;</span> <span class="attr">name</span>=<span class="string">&quot;tj_login&quot;</span> <span class="attr">class</span>=<span class="string">&quot;lb&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;return false;&quot;</span>&gt;</span>登录<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;bdpfmenu&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;s-top-left&quot;</span> <span class="attr">class</span>=<span class="string">&quot;s-top-left-new s-isindex-wrap&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;http://news.baidu.com&quot;</span> <span class="attr">target</span>=<span class="string">&quot;_blank&quot;</span> <span class="attr">class</span>=<span class="string">&quot;mnav c-font-normal c-color-t&quot;</span>&gt;</span>新闻<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;https://www.hao123.com?</span></span></span><br></pre></td></tr></table></figure>
+<p>而且仔细观察之前获得的数据，发现一些网页上有的元素其中没有，例如百度热搜，说明我们被反爬了，百度网站没有让我们获取我们想要的信息，其实解决的办法很简单，就是利用之前说过的get函数的可选参数headers,鼠标右击百度网页检查-network，刷新网页，随便点开一个文件点开headers，拉到最下方request headers，我们会找到一个user-agent，我们把它复制下来，设置为headers作为参数发给网站：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">headers=&#123;</span><br><span class="line">    <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">resp=requests.get(url,headers=headers)</span><br></pre></td></tr></table></figure>
+<p>​    这之后再打印网站信息，就会发现和在浏览器中打开的一样啦。</p>
+]]></content>
+      <tags>
+        <tag>python</tag>
+        <tag>爬虫</tag>
+        <tag>技术</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python爬虫之re模块</title>
+    <url>/2022/10/06/python%E7%88%AC%E8%99%AB%E4%B9%8Bre%E6%A8%A1%E5%9D%97/</url>
+    <content><![CDATA[<h2 id="python爬虫之re模块"><a href="#python爬虫之re模块" class="headerlink" title="python爬虫之re模块"></a>python爬虫之re模块</h2><p>本文介绍如何通过python的re模块对网页文本进行解析，获得你想要的内容。</p>
+<span id="more"></span>
+<h2 id="一-正则表达式"><a href="#一-正则表达式" class="headerlink" title="一.正则表达式"></a>一.正则表达式</h2><h3 id="（一）定义"><a href="#（一）定义" class="headerlink" title="（一）定义"></a>（一）定义</h3><p><strong>正则表达式</strong>，又称规则表达式<strong>,</strong>（Regular Expression，在代码中常简写为regex、regexp或RE），是一种文本模式，可以用来检查一个串是否含有某种子串、将匹配的子串替换或者从某个串中取出符合某个条件的子串等。</p>
+<h3 id="（二）语法"><a href="#（二）语法" class="headerlink" title="（二）语法"></a>（二）语法</h3><p>在线正则表达式测试网站：<a href="https://c.runoob.com/front-end/854/">https://c.runoob.com/front-end/854/</a></p>
+<p>​                                              <a href="https://tool.oschina.net/regex/">https://tool.oschina.net/regex/</a></p>
+<p>我们简单列出一些正则表达式的语法</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>字符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[ABC]</td>
+<td>匹配[…]中的所有字符，如[aeiou]匹配所有的元音字母；</td>
+</tr>
+<tr>
+<td><sup><a href="#fn_ABC" id="reffn_ABC">ABC</a></sup></td>
+<td>匹配除[…]中字符的所有字符；</td>
+</tr>
+<tr>
+<td>[A-Z]</td>
+<td>[A-Z]表示一个区间，比配所有大写字母，[a-z]表示所有小写字母</td>
+</tr>
+<tr>
+<td>.</td>
+<td>比配除换行符之外的任何单个字符</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>更多具体的可参考<a href="https://www.runoob.com/regexp/regexp-syntax.html">https://www.runoob.com/regexp/regexp-syntax.html</a></p>
+<p>在爬虫中，我们使用最多的是一种”贪婪匹配”：<strong>.*</strong>和<strong>.*?</strong>。</p>
+<p>1.<strong>*</strong>和<strong>+</strong>限定符是贪婪的，会尽可能多的匹配字符，例如<strong>&lt;.*&gt;</strong>会匹配文本中从第一个&lt;到最后一个&gt;中包括的所有内容，如用<strong>&lt;.*&gt;</strong>匹配<code>&lt;h1&gt;zhulizhe&lt;h1&gt;</code>的结果就是<code>&lt;h1 &gt;zhulizhe&lt;h1&gt;</code>。</p>
+<p>2.我们通过在<strong>*</strong>，<strong>+</strong>后面加上？,可以使该表达式从”贪婪”表达式转换为”非贪婪”表达式或者最小匹配。例如<strong>&lt;.*？&gt;</strong>匹配所有最小的&lt;&gt;中的内容，如用<strong>&lt;.*？&gt;</strong>匹配<code>&lt;h1&gt;zhulizhe&lt;h2&gt;</code>结果有两个：<code>&lt;h1&gt;和&lt;h2&gt;</code>。</p>
+<p>通过各种语法的组合正则表达式还能进行很多有意思的匹配，但在这里就不过多介绍了。</p>
+<h2 id="二-re模块"><a href="#二-re模块" class="headerlink" title="二.re模块"></a>二.re模块</h2><p>re模块是python独有的利用正则表达式<strong>匹配字符串的模块</strong>,re模块是一个自带的第三方库，并不需要你额外下载，只需要在开头加上：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br></pre></td></tr></table></figure>
+<p>调用即可。</p>
+<p>本文对re模块不做过多介绍，着重介绍爬虫最常用的<strong>re.complie</strong>函数</p>
+<p><strong>re.comple</strong>函数用于编译正则表达式，生成一个正则表达式（ Pattern ）对象，语法格式是：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">re.<span class="built_in">compile</span>(pattern[,flags])</span><br></pre></td></tr></table></figure>
+<p>参数：</p>
+<ul>
+<li>pattern : 一个字符串形式的正则表达式</li>
+<li>flags 可选，表示匹配模式,常见的有：</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">修饰符</th>
+<th style="text-align:left">描　　述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>re.I</code></td>
+<td style="text-align:left">使匹配对大小写不敏感</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>re.L</code></td>
+<td style="text-align:left">做本地化识别（locale-aware）匹配</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>re.M</code></td>
+<td style="text-align:left">多行匹配，影响 <code>^</code> 和 <code>$</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>re.S</code></td>
+<td style="text-align:left">使。匹配包括换行符在内的所有字符</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>re.U</code></td>
+<td style="text-align:left">根据 Unicode 字符集解析字符。这个标志影响 <code>\w</code>、<code>\W</code>、<code>\b</code> 和 <code>\B</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>re.X</code></td>
+<td style="text-align:left">该标志通过给予你更灵活的格式以便你将正则表达式写得更易于理解</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>我们通常选择模式为re.S，为了防止字符串中的转义字符，我们通常使用r”………”的形式，这个r代表了原字符串的意思，可以省略转义字符。</p>
+<p><strong>特殊的，我们在patten中通常还会使用解析结构式 (?P<groupname>匹配规则) 其中 ?P<groupname> 来定义一个组，并且每一个分组用()包起了，表示一个分组如（?P<name>），组名后面跟一个正则匹配公式，匹配值可以通过group(“groupname”)获取。</name></groupname></groupname></strong></p>
+<p>下面我们正式在python爬虫中试用一下compile函数。</p>
+<h2 id="三-re爬虫实战"><a href="#三-re爬虫实战" class="headerlink" title="三.re爬虫实战"></a>三.re爬虫实战</h2><p><img src="/2022/10/06/python%E7%88%AC%E8%99%AB%E4%B9%8Bre%E6%A8%A1%E5%9D%97/image-20221006231650163.png" alt="image-20221006231650163"></p>
+<p>我们想要获取百度主页的百度热搜信息，右键查看网页源代码，Crtl+F搜索<strong>卫星视角下的祖国大地有多美</strong></p>
+<p><img src="/2022/10/06/python%E7%88%AC%E8%99%AB%E4%B9%8Bre%E6%A8%A1%E5%9D%97/image-20221006231620796.png" alt="image-20221006231620796"></p>
+<p>发现有两处，且其他的热搜内容也都在，我们任选一处就行获取就行。我们观察一下这几处热搜内容的特征，发现内容的前面都有<strong>“title-content-title”&gt;</strong>，后面都有<strong>&lt;/span&gt;</strong>且搜索后有且仅有这几处有，我们就可以通过它来定位,匹配的代码就可以这样写：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">obj=re.<span class="built_in">compile</span>(<span class="string">r&quot;\&quot;title-content-title\&quot;&gt;(?P&lt;resou&gt;.*?)&lt;/span&gt;&quot;</span>,re.S) <span class="comment">#\表示转义&quot;</span></span><br></pre></td></tr></table></figure>
+<p>在这里我们在介绍re的两个函数findall和finditer，findall将匹配到的所有内容打包成列表的形式返回而finditer则返回一个迭代器。我们在这里选择使用finditer函数：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">result=obj.findall(page_content)</span><br></pre></td></tr></table></figure>
+<p>如果想要遍历迭代器并打印内容可以这样：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> it <span class="keyword">in</span> result:</span><br><span class="line">    <span class="built_in">print</span>(it.group(<span class="string">&quot;resou&quot;</span>))</span><br></pre></td></tr></table></figure>
+<p>打印结果为：</p>
+<p><img src="/2022/10/06/python%E7%88%AC%E8%99%AB%E4%B9%8Bre%E6%A8%A1%E5%9D%97/image-20221006231445783.png" alt="image-20221006231445783"></p>
+<p>下面附上<strong>完整代码</strong>：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests  <span class="comment">#导入requests库</span></span><br><span class="line"><span class="keyword">import</span> re <span class="comment">#导入re库</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;通过re正则表达式解析文本&quot;</span>)</span><br><span class="line"></span><br><span class="line">url=<span class="string">&quot;https://www.baidu.com/&quot;</span>  <span class="comment">#要爬取的网站地址</span></span><br><span class="line"></span><br><span class="line">headers=&#123;</span><br><span class="line">    <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&quot;</span></span><br><span class="line">&#125;  <span class="comment">#文件头防反爬</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">resp=requests.get(url,headers=headers)  <span class="comment">#调用用requests获取网站信息</span></span><br><span class="line"></span><br><span class="line">resp.encoding=<span class="string">&quot;utf-8&quot;</span>  <span class="comment">#修改解码格式</span></span><br><span class="line"></span><br><span class="line">page_content=resp.text</span><br><span class="line"></span><br><span class="line">obj=re.<span class="built_in">compile</span>(<span class="string">r&quot;\&quot;title-content-title\&quot;&gt;(?P&lt;resou&gt;.*?)&lt;/span&gt;&quot;</span>,re.S)  <span class="comment">#正则表达式的解析规则</span></span><br><span class="line"></span><br><span class="line">result=obj.finditer(page_content)  <span class="comment">##匹配文本</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> it <span class="keyword">in</span> result:  </span><br><span class="line">    <span class="built_in">print</span>(it.group(<span class="string">&quot;resou&quot;</span>))  <span class="comment">##输出，不要忘了用.group(&quot;groupname&quot;)获取值</span></span><br></pre></td></tr></table></figure>
+<p>本文到此就结束了，感谢支持ღ( ´･ᴗ･` )。</p>
+]]></content>
+      <tags>
+        <tag>python</tag>
+        <tag>爬虫</tag>
+        <tag>技术</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python爬虫入门</title>
+    <url>/2022/09/26/python%E7%88%AC%E8%99%AB%E5%85%A5%E9%97%A8/</url>
+    <content><![CDATA[<h1 id="python爬虫入门"><a href="#python爬虫入门" class="headerlink" title="python爬虫入门"></a>python爬虫入门</h1><h2 id="一-什么是爬虫"><a href="#一-什么是爬虫" class="headerlink" title="一.什么是爬虫"></a>一.什么是爬虫</h2><p>网络爬虫（Crawler）又称网络蜘蛛，或者网络机器人（Robots）。它是一种按照一定的规则，自动地抓取万维网信息的程序或者脚本。爬虫通过程序模拟用户访问网页的过程，解析网页源代码或通过抓包获取网页上所含的文字，图片，视频等资源，并将其保存下来。</p>
+<span id="more"></span>
+<h2 id="二-为什么使用爬虫"><a href="#二-为什么使用爬虫" class="headerlink" title="二.为什么使用爬虫"></a>二.为什么使用爬虫</h2><p>爬虫可以高效的批量的获取网页上的信息，创建或维护网页的人一般为了方便与统一，例如网页小说的第一页和第二页，网页源代码中紧紧改变了某几个属性的值，如content，整体源代码的框架并没有改变，因此，我们只要通过分析某一页网页的源代码，并学会如何从其获取信息，那么我们也就等于学会了如何从这一种网页中获取信息，即可通过程序批量获得此种网页上我们所需要的信息。而不用再和之前一样自己去一页一页下载，是真正意义上的一劳永逸。</p>
+<h2 id="三-为什么用python"><a href="#三-为什么用python" class="headerlink" title="三.为什么用python"></a>三.为什么用python</h2><p>学过python的人都知道，python语法简单，且有非常丰富的第三方库，世界各地的大佬们帮我们把各种函数，类写好封装在库中，我们所需要做的仅仅是学会如何去使用他们。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>小规模，数量小，爬去速度不敏感，requests库</th>
+<th>中规模，数据规模较大，爬取速度敏感scrapy库</th>
+<th>大规模，搜索引擎,爬取速度关键定制开发</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>爬取网页 玩转网页</td>
+<td>爬取网站 爬取系列网站</td>
+<td>爬取全网</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="四-一些其他关于爬虫的"><a href="#四-一些其他关于爬虫的" class="headerlink" title="四.一些其他关于爬虫的"></a>四.一些其他关于爬虫的</h2><h3 id="（一）Robots协议"><a href="#（一）Robots协议" class="headerlink" title="（一）Robots协议"></a>（一）Robots协议</h3><p>网站在反爬方面一般有两种措施，第一种是通过反爬技术手段，例如登录输入验证码，机器人验证等方式，判断你是程序还是真人访问网页以进行反爬，第二种就是通过Robots协议。</p>
+<p>Robots协议（也称为爬虫协议、机器人协议等），全称是“网络爬虫排除标准”，一般我们再网站主页面网址后加上/robots.txt即可查看网站的Robots协议（如果没有则说明网站允许对数据进行爬取），Robots协议规定了网站那些内容允许和不允许爬取，允许和不允许某些爬虫爬取等信息，例如淘宝网的Robots协议：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="attribute">User-agent</span><span class="punctuation">: </span>Baiduspider</span><br><span class="line"><span class="attribute">Disallow</span><span class="punctuation">: </span>/</span><br><span class="line"></span><br><span class="line"><span class="attribute">User-agent</span><span class="punctuation">: </span>baiduspider</span><br><span class="line"><span class="attribute">Disallow</span><span class="punctuation">: </span>/</span><br></pre></td></tr></table></figure>
+<p>说明淘宝网不希望百度的爬虫爬取其信息。</p>
+<p>Robots协议是建议但非约束性，简单地来说就是一份君子协议（防君子不防小人），但如果你违反Robots协议，可能会面临一定的法律风险。以下是对是否遵守Robots协议的建议：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>访问量小:可以遵守 访问量较大：建议遵守</th>
+<th>非商业且偶尔:建议遵守 商业利益:必须遵守</th>
+<th>必须遵守</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>爬取网页 玩转网页</td>
+<td>爬取网站 爬取系列网站</td>
+<td>爬取全网</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="（二）学习爬虫的资源"><a href="#（二）学习爬虫的资源" class="headerlink" title="（二）学习爬虫的资源"></a>（二）学习爬虫的资源</h3><p>1.<a href="https://cuiqingcai.com/17777.html">https://cuiqingcai.com/17777.html</a>    崔庆才大佬的博客，写的很详细，另外大佬写的书也很不错；</p>
+<p>2.<a href="http://c.biancheng.net/python_spider/">http://c.biancheng.net/python_spider/</a>     网站名虽然叫C语言编程网，但里面也有其他语言的教程，很不错的一个网站；</p>
+<p>3.<a href="http://www.glidedsky.com/">http://www.glidedsky.com/</a>    新手可以练习爬虫的地方，需要注册登陆，进去后可以向闯关一样完成挑战；</p>
+<p>4.哔哩哔哩，知乎，CSDN等等较为常见的网站，现在网上关于爬虫的教程越来越多，注意甄别好坏，选择适合自己的。</p>
+<p>在接下来的文章中我们正式开始python爬虫的学习。</p>
+<h2 id="五-注"><a href="#五-注" class="headerlink" title="五.注"></a>五.注</h2><p>这是我在我博客上发的第一篇文章，博客早就搭好了，但比较懒一直没写文章，最近有空而且刚好自学了python爬虫，就发几篇博客也当做自己的复习，今后可能还会发一些ACM等别的方面的内容，作者语文学的不太好，博客可能写的有点烂见谅。</p>
+]]></content>
+      <tags>
+        <tag>python</tag>
+        <tag>爬虫</tag>
+        <tag>技术</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一文搞懂导航电文</title>
+    <url>/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/</url>
+    <content><![CDATA[<h1 id="一文搞懂导航电文（以Rinex3-04为例）"><a href="#一文搞懂导航电文（以Rinex3-04为例）" class="headerlink" title="一文搞懂导航电文（以Rinex3.04为例）"></a>一文搞懂导航电文（以Rinex3.04为例）</h1><h2 id="一-什么是Rinex"><a href="#一-什么是Rinex" class="headerlink" title="一.什么是Rinex"></a>一.什么是Rinex</h2><span id="more"></span>
+<p>RINEX（Receiver Independent Exchange Format/与接收机无关的交换格式）是一种在GPS测量应用中普遍采用的标准数据格式。该格式采用文本文件存储数据，数据记录格式与接收机的制造厂商和具体型号无关。</p>
+<h2 id="二-Rinex格式文件的下载方式"><a href="#二-Rinex格式文件的下载方式" class="headerlink" title="二.Rinex格式文件的下载方式"></a>二.Rinex格式文件的下载方式</h2><p>附上网址：<br>1.<a href="https://link.zhihu.com/?target=ftp%3A//nfs.kasi.re.kr/">ftp://nfs.kasi.re.kr/</a>    与igs内容差不多，部分会缺，在电脑文件管理器中打开即可；</p>
+<p>2.<a href="http://www.csno-tarc.cn/datacenter/ephemeris">http://www.csno-tarc.cn/datacenter/ephemeris</a>    选择广播星历下载即可，可选择日期，打开链接的方式同上；</p>
+<p>3.cddss官网下载(不建议)，需注册，下载比较繁琐；</p>
+<p>(注：美国出于信息安全的考虑，关闭了所有通过ftp下载igs,cddss上的数据的途径，网上搜索下载Rinex格式文件的网站是会看到很多ftp链接里带有igs,cddss的，作者试过全都打不开)</p>
+<p>4.<a href="https://igs.org/formats-and-standards/">https://igs.org/formats-and-standards/</a>    下载Rinex各版本格式说明文件，根据需要下载即可。</p>
+<h2 id="三-Rinex导航电文内容说明"><a href="#三-Rinex导航电文内容说明" class="headerlink" title="三.Rinex导航电文内容说明"></a>三.Rinex导航电文内容说明</h2><p>Rinex格式的导航电文分为文件头和数据两部分，我们分别进行介绍：</p>
+<h3 id="（一）文件头"><a href="#（一）文件头" class="headerlink" title="（一）文件头"></a>（一）文件头</h3><p>我们先看看Rinex3.04版本的说明文档中对文件头格式的说明：</p>
+<p><img src="/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/image-20220930132004228.png" alt="image-20220930132004228"></p>
+<p>我们发现图表的最后一列有一列FORMAT,这里的FORMAT指<strong>【FORTRAN 95/2003标准中的读写格式定义】</strong></p>
+<p>具体有：</p>
+<ul>
+<li>An: 表示以n个字符宽度输出字符串</li>
+<li>Fn.m: 表示以n个字符宽输出浮点数，小数点后占m个字符宽度</li>
+<li>In[.m]: 表示以n个字符宽输出整数，至少输出m位数字（不足以“0”补齐），方括号表示可选，In表示输出占n个字符宽的整数，即n位整数，不足也不需以“0”补齐</li>
+<li>nX: 表示向右跳过n个字符的宽度</li>
+<li>Tn: 表示输出位置移动到本行第n列</li>
+</ul>
+<p>例如F9.2.11X就指表示以9个字符宽输出浮点数，小数点后占2个字符宽度，且向右跳过11个字符的宽度.</p>
+<p>在了解了格式之后我们给出一个Rinex格式的文件的文件头结合上图介绍：</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line">     <span class="attribute">3</span>.<span class="number">04</span>           N: GNSS NAV DATA    M: MIXED            RINEX VERSION / TYPE</span><br><span class="line"><span class="attribute">ssrcrin</span>-<span class="number">13</span>.<span class="number">7</span>.<span class="number">0</span>x                         <span class="number">20220101</span> <span class="number">000000</span> UTC PGM / RUN BY / DATE </span><br><span class="line">                                                            <span class="attribute">END</span> OF HEADER       </span><br></pre></td></tr></table></figure>
+<p>先看第一行，<strong>“RINEX VERSION / TYPE”</strong>说明第一行写的是Rinex格式的版本和该文件的类型，”3.04”<strong>说明该文件是</strong>3.04版本的，我们想要读懂它就需要看Rinex304的说明文档，<strong>“N: GNSS NAV DATA”</strong>说明这是文件存的是导航电文数据，<strong>“M: MIXED”</strong>说明该文档存有多个导航系统的数据；</p>
+<p>第二行<strong>“PGM / RUN BY / DATE”</strong>给出了创建当前文件的程序的名称是ssrcrin-13.7.0x，没有写创建当前文件的机构的名称，创建当前文件的时间是20220101 000000，格式是”yyyymmdd hhmmss”,采用的时间是”UTC”时间，即协调世界时；</p>
+<p>第三行<strong>“END OF HEADER”</strong>说明文件头结束。</p>
+<h3 id="（二）数据"><a href="#（二）数据" class="headerlink" title="（二）数据"></a>（二）数据</h3><p>下图是Rinex3.04版本的说明文档中对数据格式的说明：</p>
+<p><img src="/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/image-20220930140604755.png" alt="image-20220930140604755"></p>
+<p>我们结合一颗GPS卫星的数据进行分析：</p>
+<figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line">G24 2022 01 01 02 00 00 2.766801044345E<span class="string">-04</span> 7.958078640513E<span class="string">-13</span> 0.000000000000E<span class="string">+00</span></span><br><span class="line">     7.200000000000E<span class="string">+01</span><span class="string">-5</span>.281250000000E<span class="string">+00</span> 5.369152218170E<span class="string">-09</span> 7.382124868389E<span class="string">-01</span></span><br><span class="line">    <span class="string">-3</span>.110617399216E<span class="string">-07</span> 1.224164501764E<span class="string">-02</span> 7.973983883858E<span class="string">-06</span> 5.153692775726E<span class="string">+03</span></span><br><span class="line">     5.256000000000E<span class="string">+05</span><span class="string">-8</span>.381903171539E<span class="string">-08</span> 2.017266027501E<span class="string">+00</span> 1.136213541031E<span class="string">-07</span></span><br><span class="line">     9.341236686746E<span class="string">-01</span> 2.133437500000E<span class="string">+02</span> 7.961493677997E<span class="string">-01</span><span class="string">-8</span>.411778955786E<span class="string">-09</span></span><br><span class="line">    <span class="string">-7</span>.186013612025E<span class="string">-10</span> 1.000000000000E<span class="string">+00</span> 2.190000000000E<span class="string">+03</span> 0.000000000000E<span class="string">+00</span></span><br><span class="line">     2.000000000000E<span class="string">+00</span> 0.000000000000E<span class="string">+00</span> 2.328306436539E<span class="string">-09</span> 7.200000000000E<span class="string">+01</span></span><br><span class="line">     5.184180000000E<span class="string">+05</span> 4.000000000000E<span class="string">+00</span></span><br></pre></td></tr></table></figure>
+<p>解算卫星在WGS-84坐标系的坐标的参数有：</p>
+<script type="math/tex; mode=display">
+t_{oe}  星历参考时间</script><script type="math/tex; mode=display">
+\sqrt{A}卫星轨道半长轴A的平方根</script><script type="math/tex; mode=display">
+e卫星轨道偏心率</script><script type="math/tex; mode=display">
+i_0轨道倾角</script><script type="math/tex; mode=display">
+\varOmega _0周内时为0时的轨道升交点赤经</script><script type="math/tex; mode=display">
+\omega近地点角距</script><script type="math/tex; mode=display">
+M_0平近点角</script><script type="math/tex; mode=display">
+\varDelta _n卫星平均角速度校正值</script><script type="math/tex; mode=display">
+\dot{i}轨道倾角的变化率</script><script type="math/tex; mode=display">
+\varOmega轨道升交点赤经的变化率</script><script type="math/tex; mode=display">
+C_{uc}升交点角距余弦调和校正振幅</script><script type="math/tex; mode=display">
+C_{us}升交点角距正弦调和校正振幅</script><script type="math/tex; mode=display">
+C_{rc}轨道半径余弦调和校正振幅</script><script type="math/tex; mode=display">
+C_{rs}轨道半径正弦调和校正振幅</script><script type="math/tex; mode=display">
+C_{ic}轨道倾角余弦调和校正振幅</script><script type="math/tex; mode=display">
+C_{is}轨道倾角正弦调和校正振幅</script><p>G24是卫星编号,后面4个数据分别是Toc、卫星钟差、卫星钟漂、卫星钟漂变化率,第二行是第二行4个数据分别是IODE、Crs、Δ n和M0，并在后面标好了单位，如Crs的单位是(meters)米，M0的单位是(radians)弧度。之后各行的数据对照官方文档一一对应即可。</p>
+<h2 id="四-总结"><a href="#四-总结" class="headerlink" title="四.总结"></a>四.总结</h2><p>导航电文不难看懂，难的是耐下心来对照官方说明文档搞懂各行各个数据的意义，在读懂了导航电文的含义后，接下来的步骤就是解算卫星在WGS-84坐标系下的的坐标，我会在之后的文章中介绍。本文章仅代表个人观点和看法，难免会有错误和疏漏，如有错误希望大家可以和我指出ღ( ´･ᴗ･` )。</p>
+<h2 id="五-计算程序"><a href="#五-计算程序" class="headerlink" title="五.计算程序"></a>五.计算程序</h2><p>计算部分按公式一步步推就行了，作者很懒，详细的步骤就不给出了，值得一提的是树上给的公式和常量很多是错的，所以建议根据PPT上的公式进行程序的编写，需要详细步骤的我推荐一下这篇文章：<a href="https://blog.csdn.net/tyst08/article/details/102462810，公式都是正确的，写的很详细很不错，可以一步步跟进编写。">https://blog.csdn.net/tyst08/article/details/102462810，公式都是正确的，写的很详细很不错，可以一步步跟进编写。</a></p>
+]]></content>
+      <tags>
+        <tag>技术</tag>
+        <tag>Rinex</tag>
+        <tag>卫星导航</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>爬虫的好帮手——web自动化</title>
+    <url>/2022/10/21/%E7%88%AC%E8%99%AB%E7%9A%84%E5%A5%BD%E5%B8%AE%E6%89%8B%E2%80%94%E2%80%94web%E8%87%AA%E5%8A%A8%E5%8C%96/</url>
+    <content><![CDATA[<p>网课没事开个新坑，爬虫还是会更新的。</p>
+<span id="more"></span>
+<h2 id="一-为什么用web自动化"><a href="#一-为什么用web自动化" class="headerlink" title="一.为什么用web自动化"></a>一.为什么用web自动化</h2><p>相信很多人在进行爬虫时都有这样的问题，你在进行爬虫时并不能看到爬虫对网页的那些部分，那些内容进行了操作，不像自己平时上网的时候，自己亲手一步一步操作，一个网页一个网页打开，亲眼看着网页操作有一种实在感。可以选择自己想要的内容浏览下载，而爬虫显然做不到这一点，因为它是不可视的，这时候，我们就需要他的好兄弟web自动化登场了。</p>
+<h2 id="二-什么是web自动化"><a href="#二-什么是web自动化" class="headerlink" title="二.什么是web自动化"></a>二.什么是web自动化</h2><p>顾名思义，web自动化就是利用程序和浏览器驱动，实现电脑控制浏览器访问页面，获取你想要的信息，其优势在于利用浏览器驱动，使程序的操作可以在浏览器界面上一步一步进行，就和人工的一样，但其速度又远远快于人工，还能实现许多人工做不到的功能，同时web自动化也是反爬的好帮手，因为很多网页选择用CSS渲染，不直接将页面元素放入源代码中而使用web自动化就没有这个问题。</p>
+<h2 id="三-从selenium到splinter"><a href="#三-从selenium到splinter" class="headerlink" title="三.从selenium到splinter"></a>三.从selenium到splinter</h2><p>提到web自动化，不得不提python的selenium模块，selenium是最广泛使用的开源Web UI（用户界面）自动化测试套件之一，Selenium支持的语言包括C#,JAVA,Pert,PHP,python,ruby,目前，selenium web驱动程序最受python、c#欢迎。Selenium测试脚本可以使用任何支持的编程语言进行编码，并且可以直接再大多数现代Web浏览器中运行。在爬虫领域，selenium同样是一把利器，能够解决大部分的网页反爬问题。python中还有别人做过web自动化的尝试，但是都不如selenium做的好，而这其中splinter对selenium进行了二次封装，是一个相对做的比较不错的模块，splinter在以后的文章可能会介绍。</p>
+<h2 id="四-selenium的安装及使用"><a href="#四-selenium的安装及使用" class="headerlink" title="四.selenium的安装及使用"></a>四.selenium的安装及使用</h2><p>安装不用我再多说，直接简简单单<code>pip install selenium</code>,使用的话，要想通过程序调用浏览器，还要下载你选用的浏览器对应的浏览器驱动。下面给出一些常用浏览器的驱动下载地址：</p>
+<p>Chrome浏览器  <a href="https://chromedriver.storage.googleapis.com/index.html">https://chromedriver.storage.googleapis.com/index.html</a></p>
+<p>Firefox浏览器  <a href="https://github.com/mozilla/geckodriver/releases">https://github.com/mozilla/geckodriver/releases</a></p>
+<p>Edge浏览器  <a href="https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/、">https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/、</a></p>
+<p>注意下载的浏览器驱动一定要和你的浏览器版本号对应，我们下面以Chrome浏览器为例：</p>
+<p>打开设置，点击关于Chrome，查看版本号</p>
+<p><img src="/2022/10/21/%E7%88%AC%E8%99%AB%E7%9A%84%E5%A5%BD%E5%B8%AE%E6%89%8B%E2%80%94%E2%80%94web%E8%87%AA%E5%8A%A8%E5%8C%96/image-20221021084151498.png" alt="image-20221021084151498"></p>
+<p>我的Chrome是105.0.5195版本的，那么我们的浏览器驱动也要下载相应的版本</p>
+<p><img src="/2022/10/21/%E7%88%AC%E8%99%AB%E7%9A%84%E5%A5%BD%E5%B8%AE%E6%89%8B%E2%80%94%E2%80%94web%E8%87%AA%E5%8A%A8%E5%8C%96/image-20221021084720887.png" alt="image-20221021084720887"></p>
+<p>任选一个下载即可。</p>
+<p>下砸好了后要怎么使用浏览器驱动呢？这里我给出两种方法：</p>
+<p>1.在程序中写明调用的浏览器驱动的路径，这个在下一节我们会具体介绍；</p>
+<p>2.将驱动文件放到和浏览器同一个路径中，并将路径添加到环境变量，添加环境变量的方法这里我就不再多说了。</p>
+<h1 id="本次的内容就到这里了，下一次我们继续selenium模块的介绍与使用。"><a href="#本次的内容就到这里了，下一次我们继续selenium模块的介绍与使用。" class="headerlink" title="本次的内容就到这里了，下一次我们继续selenium模块的介绍与使用。"></a><strong>本次的内容就到这里了，下一次我们继续selenium模块的介绍与使用。</strong></h1>]]></content>
+      <tags>
+        <tag>python</tag>
+        <tag>技术</tag>
+        <tag>web自动化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第一次爬虫实战——爬取你喜欢的小说</title>
+    <url>/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/</url>
+    <content><![CDATA[<p>第一次爬虫实战。</p>
+<span id="more"></span>
+<p>我们先随便在网上找一个能免费看小说的网站：</p>
+<p><a href="https://www.biquke.vip/">https://www.biquke.vip/</a></p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/image-20221026201714925.png" alt="image-20221026201714925" style="zoom:50%;"></p>
+<p>点击一本书打开：</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/image-20221026201806737.png" alt="image-20221026201806737" style="zoom:50%;"></p>
+<p>随便挑一章进入：</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/image-20221026201908715.png" alt="image-20221026201908715" style="zoom:50%;"></p>
+<p>鼠标右键查看网页源代码：</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/image-20221026202110642.png" alt="image-20221026202110642" style="zoom: 33%;"></p>
+<p>我们先获取这一章的标题，Ctrl+F搜索<strong>小狗小泥人</strong>，发现有九个之多，我们随便选一个：</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/image-20221026202551817.png" alt="image-20221026202551817" style="zoom:50%;"></p>
+<p>再来看文本内容，搜索<strong>仙人指路</strong>，发现文本的内容都在一起，且格式十分的统一。</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/image-20221026202702187.png" alt="image-20221026202702187" style="zoom: 50%;"></p>
+<p>在知道了这些内容后我们就可以进行该章节的爬取了：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> io</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="comment">#设置输出为中文</span></span><br><span class="line">sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding=<span class="string">&#x27;gb18030&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#=====================第一次爬虫实战，爬取小说=======================</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#小说某一章的地址</span></span><br><span class="line">url=<span class="string">&quot;https://www.biquke.vip/book/204/137492.html&quot;</span></span><br><span class="line"><span class="comment">#用get访问该地址</span></span><br><span class="line">resp=requests.get(url)</span><br><span class="line">设置解码格式为<span class="string">&quot;utf-8&quot;</span></span><br><span class="line">resp.encoding=<span class="string">&quot;utf-8&quot;</span></span><br><span class="line">创建beautifulsoup对象</span><br><span class="line">main_page=BeautifulSoup(resp.text,<span class="string">&quot;html.parser&quot;</span>)</span><br><span class="line"><span class="comment">#获取文件名，注意处理空格</span></span><br><span class="line">text_name=main_page.find(<span class="string">&quot;div&quot;</span>,class_=<span class="string">&quot;bookname&quot;</span>).find(<span class="string">&quot;h1&quot;</span>).get_text().strip()</span><br><span class="line"><span class="comment">#find_all返回的是一个列表，所以用列表解析式操作它</span></span><br><span class="line">texts=[text_tag.get_text().strip() <span class="keyword">for</span> text_tag <span class="keyword">in</span> main_page.find_all(<span class="string">&#x27;p&#x27;</span>,class_=<span class="string">&quot;content_detail&quot;</span>)]</span><br><span class="line"><span class="comment">#新建txt文件，文件名就用章节名，把内容写进去</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">f&quot;<span class="subst">&#123;text_name&#125;</span>.txt&quot;</span>,mode=<span class="string">&#x27;w&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.write(<span class="string">f&quot;<span class="subst">&#123;text_name&#125;</span>\n\n&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> text <span class="keyword">in</span> texts:</span><br><span class="line">        f.write(text+<span class="string">&#x27;\n&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/image-20221026211153129.png" alt="image-20221026211153129" style="zoom: 67%;"></p>
+<p>我们成功的把这一章的内容爬取下来了！！</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/R-C1.jpg" alt="R-C1"></p>
+<p>但是</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/R-C2.jpg" alt="R-C2"></p>
+<p>我们的目标可不仅仅是小说的某一个章节，是整本小说，甚至更进一步爬取别的小说，一次我们就需要进行更深一步的分析：</p>
+<p>我们先回到书的主界面，右键查看网页源代码，先分析我们需要什么，我们想要每一章的地址，这样我们就可以一章一章的爬取下来了，Ctrl+F搜索<strong>第一章</strong>，这个可能因为网站的原因，章节的编号有一点乱，但不影响。</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/image-20221026224043323.png" alt="image-20221026224043323"></p>
+<p>注意到<strong>第一章 小二上酒</strong>的上面有一个<strong>href=”/book/204/137470.html”</strong>，我们打开第一章对比一下：</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/image-20221026224228382-16667980282272.png" alt="image-20221026224228382"></p>
+<p>刚好就是第一章网址的后面部分，大家可以再对比几章，都是一样的结果，而且都是在<code>&lt;dd&gt;</code>标签下的<code>&lt;a&gt;</code>标签里，但是</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/R-C.jpg" alt="R-C"></p>
+<p>我们注意到</p>
+<p><img src="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/image-20221026225112987.png" alt="image-20221026225112987"></p>
+<p>它还有一个最新章节的东西，而且里面的章节下面也有，所以我们在搜索的时候，需要做一些限定。</p>
+<p>我们可以把上面爬取一章内容的代码封装成一个函数。</p>
+<p>完整代码附上：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> io</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding=<span class="string">&#x27;gb18030&#x27;</span>)</span><br><span class="line"><span class="comment">#第一次爬虫实战，爬取小说</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#小说某一章的地址</span></span><br><span class="line">url=<span class="string">&quot;https://www.biquke.vip/book/204/137492.html&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_novel_text</span>(<span class="params">url</span>):</span><br><span class="line">    <span class="comment">#用get访问该地址</span></span><br><span class="line">    resp=requests.get(url)</span><br><span class="line"></span><br><span class="line">    resp.encoding=<span class="string">&quot;utf-8&quot;</span></span><br><span class="line"></span><br><span class="line">    main_page=BeautifulSoup(resp.text,<span class="string">&quot;html.parser&quot;</span>)</span><br><span class="line"></span><br><span class="line">    text_name=main_page.find(<span class="string">&quot;div&quot;</span>,class_=<span class="string">&quot;bookname&quot;</span>).find(<span class="string">&quot;h1&quot;</span>).get_text().strip()</span><br><span class="line"></span><br><span class="line">    texts=[text_tag.get_text().strip() <span class="keyword">for</span> text_tag <span class="keyword">in</span> main_page.find_all(<span class="string">&#x27;p&#x27;</span>,class_=<span class="string">&quot;content_detail&quot;</span>)]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">f&quot;<span class="subst">&#123;text_name&#125;</span>.txt&quot;</span>,mode=<span class="string">&#x27;w&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(<span class="string">f&quot;<span class="subst">&#123;text_name&#125;</span>\n\n&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> text <span class="keyword">in</span> texts:</span><br><span class="line">            f.write(text+<span class="string">&#x27;\n&#x27;</span>)</span><br><span class="line">    f.close()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;text_name&#125;</span>下载完毕&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    main_url=<span class="string">&quot;https://www.biquke.vip/book/204/&quot;</span></span><br><span class="line"></span><br><span class="line">    main_resp=requests.get(main_url)</span><br><span class="line"></span><br><span class="line">    main_page=BeautifulSoup(main_resp.text,<span class="string">&quot;html.parser&quot;</span>)</span><br><span class="line"></span><br><span class="line">    urls=[tag.find(<span class="string">&#x27;a&#x27;</span>).get(<span class="string">&quot;href&quot;</span>) <span class="keyword">for</span> tag <span class="keyword">in</span> main_page.find_all(<span class="string">&quot;dd&quot;</span>)[<span class="number">12</span>:]]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> url <span class="keyword">in</span> urls:</span><br><span class="line">        get_novel_text(<span class="string">&quot;https://www.biquke.vip&quot;</span>+url)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ ==<span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>就可以愉快的下载整本书阅读了！！，本程序还有很多细节可以优化——添加输入想要下载小说名字的功能，新建一个文件夹存放小说，过滤掉一些没有正文内容的章节，使用多线程加速下载…..感觉兴趣的话可以自己尝试。那么本篇内容就到此结束了，感谢各位的观看Thanks♪(･ω･)ﾉ。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>简简单单wordcloud</title>
+    <url>/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/</url>
+    <content><![CDATA[<p>你是否也在别人的PPT，报告中见过这样的图片：</p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/51a6d2522ed5653e6ec1a7e31912f6bc.jpg" alt="查看源图像" style="zoom: 50%;"></p>
+<span id="more"></span>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/b9bf1015765765df91d497abd3e6dc74.jpg" alt="查看源图像" style="zoom: 50%;"></p>
+<p>感觉很高大上，很牛逼，而苦恼于不清楚怎么去制作，没关系，万能的Python帮你解决。</p>
+<h2 id="一-什么是词云"><a href="#一-什么是词云" class="headerlink" title="一.什么是词云"></a>一.什么是词云</h2><p> “词云”是对网络文本中出现频率较高的“关键词”予以视觉上的突出，形成“关键词云层”或“关键词渲染”，从而过滤掉大量的文本信息，使浏览网页者只要一眼扫过文本就可以领略文本的主旨。</p>
+<p>词云”是数据可视化的一种形式。给出一段文本的关键词，根据关键词的出现频率而生成的一幅图像，人们只要扫一眼就能够明白文章主旨。</p>
+<h2 id="二-wordcloud模块带你玩转词云"><a href="#二-wordcloud模块带你玩转词云" class="headerlink" title="二.wordcloud模块带你玩转词云"></a>二.wordcloud模块带你玩转词云</h2><h3 id="一-wordcloud简介与下载"><a href="#一-wordcloud简介与下载" class="headerlink" title="(一)wordcloud简介与下载"></a>(一)wordcloud简介与下载</h3><p>wordcloud是优秀的词云展示第三方库，以词语为基本单位，通过图形可视化的方式，更加直观和艺术的展示文本。</p>
+<p>下载的话正常使用<code>pip install wordcloud</code>下载即可，用pip安装不了的见这篇文章：<a href="https://zhuanlan.zhihu.com/p/33507393">https://zhuanlan.zhihu.com/p/33507393</a></p>
+<h3 id="二-wordcloud入门"><a href="#二-wordcloud入门" class="headerlink" title="(二)wordcloud入门"></a>(二)wordcloud入门</h3><p>首先从wordcloud库调用WordCloud方法：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</span><br></pre></td></tr></table></figure>
+<p>使用WordCloud方法创建一个wordcloud对象：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">wd=WordCloud()</span><br></pre></td></tr></table></figure>
+<p>我们让鼠标停留在WordCloud方法上即可详细查看其内容，WordCloud方法需要的参数如下图：</p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221022002846635.png" alt="image-20221022002846635" style="zoom: 50%;"></p>
+<p>下面我们介绍几个常用的参数：</p>
+<p>1.<strong>height参数</strong>：生成词云图片的高度，默认为200；</p>
+<p>2.<strong>width参数</strong>：生成词云图片的宽度，默认为400，可以和height参数一起使用</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">width</span>=<span class="number">400</span>,height=<span class="number">400</span>/<span class="number">1</span>.<span class="number">618</span></span><br></pre></td></tr></table></figure>
+<p>将图片长宽比设置为黄金分割比；</p>
+<p>3.<strong>background_color参数:</strong>背景颜色，这个想必不用我过多介绍，就是生成的词云图片的背景颜色，默认为黑色，我们可以设置<code>background_color=&quot;white&quot;</code>，将颜色设为白色；</p>
+<p>4.<strong>repeat参数</strong>：表示单词是否可以重复出现，默认为False</p>
+<p><strong>设置前</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</span><br><span class="line"></span><br><span class="line">wd=WordCloud(background_color=<span class="string">&quot;white&quot;</span>)</span><br><span class="line"></span><br><span class="line">wd.generate(<span class="string">&quot;hello world python java windows&quot;</span>)</span><br><span class="line"></span><br><span class="line">wd.to_file(<span class="string">&quot;1.png&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221022075036132.png" alt="image-20221022075036132"></p>
+<p><strong>设置后</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</span><br><span class="line"></span><br><span class="line">wd=WordCloud(background_color=<span class="string">&quot;white&quot;</span>,repeat=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">wd.generate(<span class="string">&quot;hello world python java windows&quot;</span>)</span><br><span class="line"></span><br><span class="line">wd.to_file(<span class="string">&quot;1.png&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221022075155099.png" alt="image-20221022075155099"></p>
+<p>但我们发现，如果直接这样设置的话生成的字云有一点太密了，这时候就需要下一个参数max_words;</p>
+<p>5.<strong>max_words参数</strong>：词云的最大单词数，默认为200；</p>
+<p>6.<strong>max_font_size参数</strong>：单词的最大字号，还一个min_font_size,是最小字号，默认为4；</p>
+<p>7.<strong>font_path参数</strong>：尝试运行一下这段代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</span><br><span class="line"></span><br><span class="line">wd=WordCloud(background_color=<span class="string">&quot;white&quot;</span>,repeat=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">wd.generate(<span class="string">&quot;唱 跳 Rap 篮球 蔡徐坤&quot;</span>)</span><br><span class="line"></span><br><span class="line">wd.to_file(<span class="string">&quot;1.png&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>发现会得到这样的结果：</p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221022101147647.png" alt="image-20221022101147647"></p>
+<p>发现所有的汉字都变成了方框，这是因为他默认的字体是英文的，不能识别汉字，这时候，我们就需要用font_path参数吧中文字体引进来了。</p>
+<p>你电脑里下载好的字体在这里：</p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221022104312657.png" alt="image-20221022104312657" style="zoom:50%;"></p>
+<p>选择一个中文字体即可：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</span><br><span class="line"></span><br><span class="line">wd=WordCloud(font_path=<span class="string">&quot;C:\\Windows\\Fonts\\simsun.ttc&quot;</span>,background_color=<span class="string">&quot;white&quot;</span>,repeat=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">wd.generate(<span class="string">&quot;唱 跳 Rap 篮球 蔡徐坤&quot;</span>)</span><br><span class="line"></span><br><span class="line">wd.to_file(<span class="string">&quot;1.png&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221022104644533.png" alt="image-20221022104644533"></p>
+<p>8.<strong>colormap参数</strong>：词云单词的颜色，可以上<a href="https://matplotlib.org/stable/tutorials/colors/colormaps.html选择，如我设置colormap为winter：">https://matplotlib.org/stable/tutorials/colors/colormaps.html选择，如我设置colormap为winter：</a></p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221022121327227.png" alt="image-20221022121327227"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">wd=WordCloud(font_path=<span class="string">&quot;C:\\Windows\\Fonts\\simsun.ttc&quot;</span>,background_color=<span class="string">&quot;white&quot;</span>,repeat=<span class="literal">True</span>,colormap=<span class="string">&#x27;winter&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>结果为：</p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221022121353015.png" alt="image-20221022121353015"></p>
+<p>除此之外，还有各种各样的colormap可以选择</p>
+<p>除此之外，也可以自制配色：</p>
+<p>这种方法需要从图片中提取配色，例如我想用这张图片的配色：</p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221022232842173.png" alt="image-20221022232842173" style="zoom:80%;"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> ImageColorGenerator</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">colors=np.array(Image.<span class="built_in">open</span>(<span class="string">&quot;780.jpg&quot;</span>))</span><br><span class="line"></span><br><span class="line">color_map=ImageColorGenerator(colors)</span><br></pre></td></tr></table></figure>
+<p>我们通过将图片转化为array数组来获取它的RGB三通道值，再用wordcloud自带的ImageColorGenerator函数将其转为配色，注意这时候就不能再用colormap参数了，这时候得使用color_func参数：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</span><br><span class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span>  ImageColorGenerator</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">colors=np.array(Image.<span class="built_in">open</span>(<span class="string">&quot;780.jpg&quot;</span>))</span><br><span class="line"></span><br><span class="line">color_map=ImageColorGenerator(colors)</span><br><span class="line"></span><br><span class="line">wd=WordCloud(font_path=<span class="string">&quot;C:\\Windows\\Fonts\\simsun.ttc&quot;</span>,background_color=<span class="string">&quot;white&quot;</span>,repeat=<span class="literal">True</span>,color_func=color_map)</span><br><span class="line"></span><br><span class="line">wd.generate(<span class="string">&quot;唱 跳 Rap 篮球 蔡徐坤&quot;</span>)</span><br><span class="line"></span><br><span class="line">wd.to_file(<span class="string">&quot;1.png&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>结果图：</p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221022233659654.png" alt="image-20221022233659654"></p>
+<p>快用这种方法用你喜欢的配色来制作词云吧！！</p>
+<p>9，<strong>mask参数</strong>：给词云生成轮廓用的参数,不需要做成轮廓的背景应为白色，如这是博主利用PS做的一张图片：</p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221022235831471.png" alt="image-20221022235831471" style="zoom: 25%;"></p>
+<p>将图片转化为array数组的形式，传给mask参数：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span> WordCloud</span><br><span class="line"><span class="keyword">from</span> wordcloud <span class="keyword">import</span>  ImageColorGenerator</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">mask=np.array(Image.<span class="built_in">open</span>(<span class="string">&quot;cxk.png&quot;</span>))</span><br><span class="line"></span><br><span class="line">wd=WordCloud(font_path=<span class="string">&quot;C:\\Windows\\Fonts\\simsun.ttc&quot;</span>,background_color=<span class="string">&quot;white&quot;</span>,repeat=<span class="literal">True</span>,mask=mask,max_words=<span class="number">150</span>)</span><br><span class="line"></span><br><span class="line">wd.generate(<span class="string">&quot;唱 跳 Rap 篮球 蔡徐坤&quot;</span>)</span><br><span class="line"></span><br><span class="line">wd.to_file(<span class="string">&quot;1.png&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>得到的结果图如下：</p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221023000022538.png" alt="image-20221023000022538" style="zoom:25%;"></p>
+<p>运行过程可能会有点慢，这是很正常的，注意如果要自定义配色和定义边框的话，两张图片的大小需要一致；</p>
+<p>10.<strong>counter_width参数</strong>：我们注意到之前生成的图虽然有了边框，但只有一个大致的形状，想要把边框用直线画出来，就需要设置这个参数我们设置<code>contour_width=3</code>，得到的结果为：</p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221023001619859.png" alt="image-20221023001619859" style="zoom:25%;"></p>
+<p>图片有了黑色的线条做边框，此外还可以用counter_color参数设置边框的颜色；</p>
+<p>11.<strong>mode参数</strong>：mode参数默认为RGB通道，如果我们想设置词云背景为透明，需要将mode设置为RGBA，background_color设置为None,生成结果为背景透明图片：</p>
+<p><img src="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/image-20221023003740205.png" alt="image-20221023003740205" style="zoom:25%;"></p>
+<p>这个黑色我也不知道为什么，注意wordcloud有个bug至今未修复，就是设置了透明背景就不能设置counter_width和color,因为通道个数不匹配。</p>
+<p>此外wordcloud还有两个重要的函数generate和to_file，generate是以字符串为参数把字符串变成词云，而to_file函数顾名思义就是将生成的词云保存到本地，参数是一个字符串，表示到处结果的路径。</p>
+<h1 id="以上就是如何利用wordcloud模块制作词云的教程了，一般来说生成词云的单词并不会直接给出，需要我们从一大段文本中自己提取关键词，这时候就需要Python的另一个文本处理模块jieba了，本次的内容就到处结束了，希望大家积极评论，Thanks♪-･ω･-ﾉ"><a href="#以上就是如何利用wordcloud模块制作词云的教程了，一般来说生成词云的单词并不会直接给出，需要我们从一大段文本中自己提取关键词，这时候就需要Python的另一个文本处理模块jieba了，本次的内容就到处结束了，希望大家积极评论，Thanks♪-･ω･-ﾉ" class="headerlink" title="以上就是如何利用wordcloud模块制作词云的教程了，一般来说生成词云的单词并不会直接给出，需要我们从一大段文本中自己提取关键词，这时候就需要Python的另一个文本处理模块jieba了，本次的内容就到处结束了，希望大家积极评论，Thanks♪(･ω･)ﾉ"></a>以上就是如何利用wordcloud模块制作词云的教程了，一般来说生成词云的单词并不会直接给出，需要我们从一大段文本中自己提取关键词，这时候就需要Python的另一个文本处理模块jieba了，本次的内容就到处结束了，希望大家积极评论，Thanks♪(･ω･)ﾉ</h1>]]></content>
+      <tags>
+        <tag>python</tag>
+        <tag>技术</tag>
+      </tags>
+  </entry>
+</search>

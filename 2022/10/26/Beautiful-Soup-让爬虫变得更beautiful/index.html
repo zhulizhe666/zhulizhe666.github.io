@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css"/>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhulizhe666.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Beautiful Soup是一个可以从HTML或XML文件中提取数据的Python库，在熟练掌握后，它能帮你很轻松的实现文档中某一内容的查找定位。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Beautiful Soup:让爬虫变得更beautiful">
+<meta property="og:url" content="https://zhulizhe666.github.io/2022/10/26/Beautiful-Soup-%E8%AE%A9%E7%88%AC%E8%99%AB%E5%8F%98%E5%BE%97%E6%9B%B4beautiful/index.html">
+<meta property="og:site_name" content="擎天小猪の博客">
+<meta property="og:description" content="Beautiful Soup是一个可以从HTML或XML文件中提取数据的Python库，在熟练掌握后，它能帮你很轻松的实现文档中某一内容的查找定位。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-26T15:16:24.000Z">
+<meta property="article:modified_time" content="2022-10-26T15:18:26.052Z">
+<meta property="article:author" content="擎天小猪">
+<meta property="article:tag" content="二次元">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://zhulizhe666.github.io/2022/10/26/Beautiful-Soup-%E8%AE%A9%E7%88%AC%E8%99%AB%E5%8F%98%E5%BE%97%E6%9B%B4beautiful/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhulizhe666.github.io/2022/10/26/Beautiful-Soup-%E8%AE%A9%E7%88%AC%E8%99%AB%E5%8F%98%E5%BE%97%E6%9B%B4beautiful/","path":"2022/10/26/Beautiful-Soup-让爬虫变得更beautiful/","title":"Beautiful Soup:让爬虫变得更beautiful"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Beautiful Soup:让爬虫变得更beautiful | 擎天小猪の博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+<a target="_blank" rel="noopener" href="https://github.com/zhulizhe666" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">擎天小猪の博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">月が绮丽ですね</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-bs4%E6%A8%A1%E5%9D%97%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8CBeautiful-Soup%E7%9A%84%E5%BC%95%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">一.bs4模块的安装和Beautiful Soup的引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-BeautifulSoup%E7%9A%84%E6%AD%A3%E7%A1%AE%E6%89%93%E5%BC%80%E6%96%B9%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">二.BeautifulSoup的正确打开方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-find%E5%92%8Cfind-all"><span class="nav-number">3.</span> <span class="nav-text">三.find和find_all</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80-find%E5%87%BD%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">(一) find函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C-find-all%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">(二).find_all函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B-%E8%8E%B7%E5%BE%97%E4%BD%A0%E6%83%B3%E8%A6%81%E7%9A%84%E5%80%BC"><span class="nav-number">4.</span> <span class="nav-text">四.获得你想要的值</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="擎天小猪"
+      src="/images/avatar_hutao.jpeg">
+  <p class="site-author-name" itemprop="name">擎天小猪</p>
+  <div class="site-description" itemprop="description">为美好的世界送上祝福</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhulizhe666" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhulizhe666" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://duheru.github.io/" title="https:&#x2F;&#x2F;duheru.github.io&#x2F;" rel="noopener" target="_blank">duheru</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://macshuo.com/" title="http:&#x2F;&#x2F;macshuo.com&#x2F;" rel="noopener" target="_blank">MacTalk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://example.com/" title="http:&#x2F;&#x2F;example.com&#x2F;" rel="noopener" target="_blank">Title</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+  <a href="https://github.com/zhulizhe666" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhulizhe666.github.io/2022/10/26/Beautiful-Soup-%E8%AE%A9%E7%88%AC%E8%99%AB%E5%8F%98%E5%BE%97%E6%9B%B4beautiful/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar_hutao.jpeg">
+      <meta itemprop="name" content="擎天小猪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="擎天小猪の博客">
+      <meta itemprop="description" content="为美好的世界送上祝福">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Beautiful Soup:让爬虫变得更beautiful | 擎天小猪の博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Beautiful Soup:让爬虫变得更beautiful
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-10-26 23:16:24 / 修改时间：23:18:26" itemprop="dateCreated datePublished" datetime="2022-10-26T23:16:24+08:00">2022-10-26</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span id="/2022/10/26/Beautiful-Soup-%E8%AE%A9%E7%88%AC%E8%99%AB%E5%8F%98%E5%BE%97%E6%9B%B4beautiful/" class="post-meta-item leancloud_visitors" data-flag-title="Beautiful Soup:让爬虫变得更beautiful" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+  
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.8k</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Beautiful Soup是一个可以从HTML或XML文件中提取数据的Python库，在熟练掌握后，它能帮你很轻松的实现文档中某一内容的查找定位。</p>
+<span id="more"></span>
+<h2 id="一-bs4模块的安装和Beautiful-Soup的引用"><a href="#一-bs4模块的安装和Beautiful-Soup的引用" class="headerlink" title="一.bs4模块的安装和Beautiful Soup的引用"></a>一.bs4模块的安装和Beautiful Soup的引用</h2><p>bs4模块不是系统自带的，个人喜欢用pip下载方便又快捷，打开电脑的命令行窗口，输入：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip <span class="keyword">install</span> bs4</span><br></pre></td></tr></table></figure>
+<p>即可，在下载好bs4模块后，我们想调用里面的Beautful Soup，只需要在开头加上：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br></pre></td></tr></table></figure>
+<p>注：BeautifulSoup不仅支持HTML解析器，还支持lxml,html5lib等第三方的解析器，但这些解析器需要另外下载，下表是<a target="_blank" rel="noopener" href="https://beautifulsoup.cn/">BeautfulSoup中文文档</a>对其他一些解析器的介绍，本文之后的内容仅采用最基本的HTML解析器，其他的请大家自行上网查找资料，本文不做过多介绍：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">解析器</th>
+<th style="text-align:left">使用方法</th>
+<th style="text-align:left">优势</th>
+<th style="text-align:left">劣势</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Python标准库</td>
+<td style="text-align:left"><code>BeautifulSoup(markup, &quot;html.parser&quot;)</code></td>
+<td style="text-align:left">Python的内置标准库执行速度适中文档容错能力强</td>
+<td style="text-align:left">Python 2.7.3 or 3.2.2)前 的版本中文档容错能力差</td>
+</tr>
+<tr>
+<td style="text-align:left">lxml HTML 解析器</td>
+<td style="text-align:left"><code>BeautifulSoup(markup, &quot;lxml&quot;)</code></td>
+<td style="text-align:left">速度快文档容错能力强</td>
+<td style="text-align:left">需要安装C语言库</td>
+</tr>
+<tr>
+<td style="text-align:left">lxml XML 解析器</td>
+<td style="text-align:left"><code>BeautifulSoup(markup, [&quot;lxml-xml&quot;])``BeautifulSoup(markup, &quot;xml&quot;)</code></td>
+<td style="text-align:left">速度快唯一支持XML的解析器</td>
+<td style="text-align:left">需要安装C语言库</td>
+</tr>
+<tr>
+<td style="text-align:left">html5lib</td>
+<td style="text-align:left"><code>BeautifulSoup(markup, &quot;html5lib&quot;)</code></td>
+<td style="text-align:left">最好的容错性以浏览器的方式解析文档生成HTML5格式的文档</td>
+<td style="text-align:left">速度慢不依赖外</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="二-BeautifulSoup的正确打开方式"><a href="#二-BeautifulSoup的正确打开方式" class="headerlink" title="二.BeautifulSoup的正确打开方式"></a>二.BeautifulSoup的正确打开方式</h2><p>我们既然都把BeautifulSoup从模块里单独引用出来了，说明其一定有着非常重要的作用，我们得到一段HTML文本，例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">html_doc = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">&lt;html&gt;&lt;head&gt;&lt;title&gt;The Dormouse&#x27;s story&lt;/title&gt;&lt;/head&gt;</span></span><br><span class="line"><span class="string">&lt;body&gt;</span></span><br><span class="line"><span class="string">&lt;p class=&quot;title&quot;&gt;&lt;b&gt;The Dormouse&#x27;s story&lt;/b&gt;&lt;/p&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;p class=&quot;story&quot;&gt;Once upon a time there were three little sisters; and their names were</span></span><br><span class="line"><span class="string">&lt;a href=&quot;http://example.com/elsie&quot; class=&quot;sister&quot; id=&quot;link1&quot;&gt;Elsie&lt;/a&gt;,</span></span><br><span class="line"><span class="string">&lt;a href=&quot;http://example.com/lacie&quot; class=&quot;sister&quot; id=&quot;link2&quot;&gt;Lacie&lt;/a&gt; and</span></span><br><span class="line"><span class="string">&lt;a href=&quot;http://example.com/tillie&quot; class=&quot;sister&quot; id=&quot;link3&quot;&gt;Tillie&lt;/a&gt;;</span></span><br><span class="line"><span class="string">and they lived at the bottom of a well.&lt;/p&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;p class=&quot;story&quot;&gt;...&lt;/p&gt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+<p>我们在用尽各种手段得到这段文本后，首先要对它进行解析：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">page=BeautifulSoup(html_doc,<span class="string">&quot;html.parser&quot;</span>,from_encoding=<span class="string">&#x27;utf-8&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>想要创建一个BeautifulSoup对象，需要三个参数，第一个是待解析的HTML文本，第二个是解析器类型，第三个是HTML文本的编码类型。它将HTNL文档转化为一棵标签树，所有的节点可分为以下几类</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>基本元素</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tag</td>
+<td>标签，最基本的信息组织单位，分别用<>和</>标明开头和结尾</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>标签的名字，<p>..</p>的名字是 p，格式：<tag>.name</tag></td>
+</tr>
+<tr>
+<td>Attributes</td>
+<td>标签的属性，字典形式组成，格式：<tag>.attrs</tag></td>
+</tr>
+<tr>
+<td>NavigableString</td>
+<td>标签内非属性字符串, <>...</>中字符串，格式：<tag>.string</tag></td>
+</tr>
+<tr>
+<td>Comment</td>
+<td>标签内字符串的注释部分，一种特殊的comment类型</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>操作这棵标签树的最简单的办法是使用tag_name,用法<code>tag.tag_name</code>,例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">page.head</span><br><span class="line"><span class="comment"># &#x27;&#x27;&#x27;&lt;head&gt;&lt;title&gt;The Dormouse&#x27;s story&lt;/title&gt;&lt;/head&gt;&#x27;&#x27;&#x27;</span></span><br><span class="line">page.a</span><br><span class="line"><span class="comment"># &#x27;&#x27;&#x27;&lt;a class=&quot;sister&quot; href=&quot;http://example.com/elsie&quot; id=&quot;link1&quot;&gt;Elsie&lt;/a&gt;&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>但用此方法只能找到第一个标签，想要找到之后的标签以及全部的标签，就需要用到爬虫中很常用的BeautifulSoup类的两个函数。</p>
+<h2 id="三-find和find-all"><a href="#三-find和find-all" class="headerlink" title="三.find和find_all"></a>三.find和find_all</h2><h3 id="一-find函数"><a href="#一-find函数" class="headerlink" title="(一) find函数"></a>(一) find函数</h3><p>find函数之返回第一个匹配的对象，基本语法为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find(tag, attributes, recursive, text, keywords)</span><br></pre></td></tr></table></figure>
+<p>我们在平常一般只用前2个参数：tag，attributes。</p>
+<p><strong>tag</strong></p>
+<p>需要搜素的标签名</p>
+<p><strong>attributes</strong><br>属性参数 attributes 是用一个 Python <strong>字典</strong>封装一个标签的若干属性和对应的属性值。例如</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">page.find(<span class="string">&#x27;a&#x27;</span>,&#123;<span class="string">&quot;id&quot;</span>:<span class="string">&quot;link1&quot;</span>&#125;)返回</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;&lt;a href=&quot;http://example.com/elsie&quot; class=&quot;sister&quot; id=&quot;link1&quot;&gt;Elsie&lt;/a&gt;&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><strong>recursive</strong></p>
+<p>递归参数recursive是一个布尔变量，如果recursive设置为True,调用该函数会从所有层级的标签中查找出符合要求的，而如果设置为False,就只会从一级标签中查找， recursive 默认值是 True ，一般不需要设置。</p>
+<p><strong>text</strong><br>文本参数 text 有点不同，它是用标签的文本内容去匹配，而不是用标签的属性。</p>
+<p><strong>keywords</strong><br>可以让你选择那些具有指定属性的标签，其实和用attributes传参基本一致</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#用keyword</span></span><br><span class="line">page.find(<span class="string">&#x27;a&#x27;</span>,<span class="built_in">id</span>=<span class="string">&quot;link1&quot;</span>)</span><br><span class="line"><span class="comment">#用attributes</span></span><br><span class="line">page.find(<span class="string">&#x27;a&#x27;</span>,&#123;<span class="string">&quot;id&quot;</span>:<span class="string">&quot;link1&quot;</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>在写属性名时，如果属性名和python的保留关键字相同，会出现报错的情况，如class,这时候我们有两种办法解决：</p>
+<ul>
+<li>在attrs属性用字典的方式进行参数传递</li>
+<li>BeautifulSoup自带的特别关键字<strong>class_</strong></li>
+</ul>
+<h3 id="二-find-all函数"><a href="#二-find-all函数" class="headerlink" title="(二).find_all函数"></a>(二).find_all函数</h3><p>与find不同，find_all返回所有匹配到的结果,并将匹配结果打包成列表的形式返回。基本语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find_all(tag, attributes, recursive, text, limit, keywords)</span><br></pre></td></tr></table></figure>
+<p>基本与find相同，只是多了一个limit参数</p>
+<p><strong>limit</strong></p>
+<p>范围限制参数 limit ，显然只用于 find_all 方法。 find 其实等价于 find_all 的 limit 等于1 时的情形。如果你只对网页中获取的前 x 项结果感兴趣，就可以设置它.</p>
+<h2 id="四-获得你想要的值"><a href="#四-获得你想要的值" class="headerlink" title="四.获得你想要的值"></a>四.获得你想要的值</h2><p>我们在通过find和find_all方法找到了你想要找的标签后，该如何获得标签内你想要的某个属性值或者是文本呢？这里我们介绍两个方法get和get_text,例如我们定位到了标签<code>tag=&lt;a href=&quot;http://example.com/elsie&quot; class=&quot;sister&quot; id=&quot;link1&quot;&gt;Elsie&lt;/a&gt;</code>,我们想要获取其href属性的地址，只需要</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tag.get(<span class="string">&quot;href&quot;</span>) <span class="comment">#参数为属性名</span></span><br></pre></td></tr></table></figure>
+<p>如果我们需要的是标签的文本值Elsie，只需要</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tag.get_text（）</span><br></pre></td></tr></table></figure>
+<p>怎么样是不是很简单呢？</p>
+<p>关于BeautifulSoup我就介绍这么多啦，感谢各位观看！！</p>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+  
+    <div style="text-align:center;color: #555;font-size:18px;">End~~ <i class="fa fa-paw"></i> 撒花ฅ&gt;ω&lt;*ฅ花撒</div>
+  
+</div>
+
+      
+    </div>
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/10/21/%E7%AE%80%E7%AE%80%E5%8D%95%E5%8D%95wordcloud/" rel="prev" title="简简单单wordcloud">
+                  <i class="fa fa-chevron-left"></i> 简简单单wordcloud
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/10/26/%E7%AC%AC%E4%B8%80%E6%AC%A1%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98%E2%80%94%E2%80%94%E7%88%AC%E5%8F%96%E4%BD%A0%E5%96%9C%E6%AC%A2%E7%9A%84%E5%B0%8F%E8%AF%B4/" rel="next" title="第一次爬虫实战——爬取你喜欢的小说">
+                  第一次爬虫实战——爬取你喜欢的小说 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="valine-comments"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">擎天小猪</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">25k</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共11.1k字</span>
+</div>
+    </div>
+  </footer>
+
+  <script src="https://soyawww.github.io/live2d/autoload.js"></script>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","cdn":"//https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+
+
+<script class="next-config" data-name="valine" type="application/json">{"enable":true,"appId":"wJLcM7FPVSGJ1ZLuSOemre8u-gzGzoHsz","appKey":"dAFwcWfz4iDB5gVZIYw1E0uL","serverURLs":"https://wjlcm7fp.lc-cn-n1-shared.com","placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":true,"comment_count":true,"recordIP":true,"enableQQ":true,"requiredFields":[],"el":"#valine-comments","path":"/2022/10/26/Beautiful-Soup-%E8%AE%A9%E7%88%AC%E8%99%AB%E5%8F%98%E5%BE%97%E6%9B%B4beautiful/"}</script>
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.valine.el)
+    .then(() => NexT.utils.getScript(
+      'https://fastly.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js',
+      { condition: window.Valine }
+    ))
+    .then(() => {
+      new Valine(CONFIG.valine);
+    });
+});
+</script>
+
+</body>
+  <script src="https://zhulizhe666.github.io/live2d/autoload.js"></script>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>
+
+<script src="live2d-widget/autoload.js"></script>
+
+<!-- 雪花特效2 -->
+<script type="text/javascript" src="/js/snow2.js"></script>

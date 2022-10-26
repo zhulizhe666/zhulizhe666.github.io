@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css"/>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/32.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/16.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zhulizhe666.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Python request库入门一.简介与安装Requests 是⽤Python语⾔编写，基于urllib，采⽤Apache2 Licensed开源协议的 HTTP 库，该模块主要用来发送 HTTP 请求。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python requests库入门">
+<meta property="og:url" content="https://zhulizhe666.github.io/2022/09/27/python-requests%E5%BA%93%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="擎天小猪の博客">
+<meta property="og:description" content="Python request库入门一.简介与安装Requests 是⽤Python语⾔编写，基于urllib，采⽤Apache2 Licensed开源协议的 HTTP 库，该模块主要用来发送 HTTP 请求。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-27T15:16:37.000Z">
+<meta property="article:modified_time" content="2022-09-28T14:40:32.509Z">
+<meta property="article:author" content="擎天小猪">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://zhulizhe666.github.io/2022/09/27/python-requests%E5%BA%93%E5%85%A5%E9%97%A8/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zhulizhe666.github.io/2022/09/27/python-requests%E5%BA%93%E5%85%A5%E9%97%A8/","path":"2022/09/27/python-requests库入门/","title":"python requests库入门"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python requests库入门 | 擎天小猪の博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+<a target="_blank" rel="noopener" href="https://github.com/zhulizhe666" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">擎天小猪の博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">月が绮丽ですね</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-request%E5%BA%93%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">Python request库入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">一.简介与安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">二.使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%8F%8D%E7%88%AC"><span class="nav-number">1.3.</span> <span class="nav-text">三.第一次反爬</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="擎天小猪"
+      src="/images/avatar_hutao.jpeg">
+  <p class="site-author-name" itemprop="name">擎天小猪</p>
+  <div class="site-description" itemprop="description">为美好的世界送上祝福</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhulizhe666" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhulizhe666" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://duheru.github.io/" title="https:&#x2F;&#x2F;duheru.github.io&#x2F;" rel="noopener" target="_blank">duheru</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://macshuo.com/" title="http:&#x2F;&#x2F;macshuo.com&#x2F;" rel="noopener" target="_blank">MacTalk</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://example.com/" title="http:&#x2F;&#x2F;example.com&#x2F;" rel="noopener" target="_blank">Title</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+
+  <a href="https://github.com/zhulizhe666" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhulizhe666.github.io/2022/09/27/python-requests%E5%BA%93%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar_hutao.jpeg">
+      <meta itemprop="name" content="擎天小猪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="擎天小猪の博客">
+      <meta itemprop="description" content="为美好的世界送上祝福">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="python requests库入门 | 擎天小猪の博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python requests库入门
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-09-27 23:16:37" itemprop="dateCreated datePublished" datetime="2022-09-27T23:16:37+08:00">2022-09-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-28 22:40:32" itemprop="dateModified" datetime="2022-09-28T22:40:32+08:00">2022-09-28</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span id="/2022/09/27/python-requests%E5%BA%93%E5%85%A5%E9%97%A8/" class="post-meta-item leancloud_visitors" data-flag-title="python requests库入门" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+  
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.2k</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Python-request库入门"><a href="#Python-request库入门" class="headerlink" title="Python request库入门"></a>Python request库入门</h1><h2 id="一-简介与安装"><a href="#一-简介与安装" class="headerlink" title="一.简介与安装"></a>一.简介与安装</h2><p>Requests 是⽤Python语⾔编写，基于urllib，采⽤Apache2 Licensed开源协议的 HTTP 库，该模块主要用来发送 HTTP 请求。</p>
+<span id="more"></span>
+<p>下载建议使用pip，用电脑打开命令行窗口，输入以下命令：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip <span class="keyword">install</span> requests</span><br></pre></td></tr></table></figure>
+<p>库下载的慢的话可以换源，换源的方法如下：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install +库名 -i +源</span><br><span class="line"><span class="symbol">eg:</span>    pip install requests -i <span class="symbol">http:</span>/<span class="regexp">/mirrors.aliyun.com/pypi</span><span class="regexp">/simple/</span></span><br></pre></td></tr></table></figure>
+<p>几个国内源：</p>
+<p>阿里云 <a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=http%3A%2F%2Fmirrors.aliyun.com%2Fpypi%2Fsimple%2F">http://mirrors.aliyun.com/pypi/simple/</a><br>中国科技大学 <a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=https%3A%2F%2Fpypi.mirrors.ustc.edu.cn%2Fsimple%2F">https://pypi.mirrors.ustc.edu.cn/simple/</a><br>豆瓣(douban) <a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=http%3A%2F%2Fpypi.douban.com%2Fsimple%2F">http://pypi.douban.com/simple/</a><br>清华大学 <a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=https%3A%2F%2Fpypi.tuna.tsinghua.edu.cn%2Fsimple%2F">https://pypi.tuna.tsinghua.edu.cn/simple/</a><br>中国科学技术大学 <a target="_blank" rel="noopener" href="https://links.jianshu.com/go?to=http%3A%2F%2Fpypi.mirrors.ustc.edu.cn%2Fsimple%2F">http://pypi.mirrors.ustc.edu.cn/simple/</a></p>
+<h2 id="二-使用"><a href="#二-使用" class="headerlink" title="二.使用"></a>二.使用</h2><p>关于获取网站数据，requests库提供了get和post两种方法，post是被设计用来向上放东西的，而get是被设计用来从服务器取东西的，如果你需要的数据在网页源代码中有，使用get；如果你需要的数据在网页源代码中没有，是从网络中获取的，那么选择post，下面以get为例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;一次简单的爬虫尝试&quot;</span>) <span class="comment">#爬取百度信息</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> requests  <span class="comment">#导入requests库</span></span><br><span class="line"></span><br><span class="line">url=<span class="string">&quot;https://www.baidu.com&quot;</span> <span class="comment">#要爬取的网站地址</span></span><br><span class="line"></span><br><span class="line">resp=requests.get(url) <span class="comment">#用requests获取网站信息</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(resp.text) <span class="comment">#打印信息</span></span><br></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">一次简单的爬虫尝试</span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--STATUS OK--&gt;</span><span class="tag">&lt;<span class="name">html</span>&gt;</span> <span class="tag">&lt;<span class="name">head</span>&gt;</span><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">content-type</span> <span class="attr">content</span>=<span class="string">text/html;charset</span>=<span class="string">utf-8</span>&gt;</span><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">X-UA-Compatible</span> <span class="attr">content</span>=<span class="string">IE</span>=<span class="string">Edge</span>&gt;</span><span class="tag">&lt;<span class="name">meta</span> <span class="attr">content</span>=<span class="string">always</span> <span class="attr">name</span>=<span class="string">referrer</span>&gt;</span><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">stylesheet</span> <span class="attr">type</span>=<span class="string">text/css</span> <span class="attr">href</span>=<span class="string">https://ss1.bdstatic.com/5eN1bjq8AAUYm2zgoY3K/r/www/cache/bdorz/baidu.min.css</span>&gt;</span><span class="tag">&lt;<span class="name">title</span>&gt;</span>百度一下，你就知道<span class="tag">&lt;/<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span> <span class="tag">&lt;<span class="name">body</span> <span class="attr">link</span>=<span class="string">#0000cc</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">wrapper</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">head</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">head_wrapper</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">s_form</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">s_form_wrapper</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">lg</span>&gt;</span> <span class="tag">&lt;<span class="name">img</span> <span class="attr">hidefocus</span>=<span class="string">true</span> <span class="attr">src</span>=<span class="string">//www.baidu.com/img/bd_logo1.png</span> <span class="attr">width</span>=<span class="string">270</span> <span class="attr">height</span>=<span class="string">129</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">form</span> <span class="attr">name</span>=<span class="string">f</span> <span class="attr">action</span>=<span class="string">//www.baidu.com/s</span> <span class="attr">class</span>=<span class="string">fm</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">bdorz_come</span> <span class="attr">value</span>=<span class="string">1</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">ie</span> <span class="attr">value</span>=<span class="string">utf-8</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">f</span> <span class="attr">value</span>=<span class="string">8</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">rsv_bp</span> <span class="attr">value</span>=<span class="string">1</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">rsv_idx</span> <span class="attr">value</span>=<span class="string">1</span>&gt;</span> <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">hidden</span> <span class="attr">name</span>=<span class="string">tn</span> <span class="attr">value</span>=<span class="string">baidu</span>&gt;</span><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;bg s_ipt_wr&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">kw</span> <span class="attr">name</span>=<span class="string">wd</span> <span class="attr">class</span>=<span class="string">s_ipt</span> <span class="attr">value</span> <span class="attr">maxlength</span>=<span class="string">255</span> <span class="attr">autocomplete</span>=<span class="string">off</span> <span class="attr">autofocus</span>=<span class="string">autofocus</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;bg s_btn_wr&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">submit</span> <span class="attr">id</span>=<span class="string">su</span> <span class="attr">value</span>=<span class="string">百度一下</span> <span class="attr">class</span>=<span class="string">&quot;bg s_btn&quot;</span> <span class="attr">autofocus</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span> <span class="tag">&lt;/<span class="name">form</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">u1</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://news.baidu.com</span> <span class="attr">name</span>=<span class="string">tj_trnews</span> <span class="attr">class</span>=<span class="string">mnav</span>&gt;</span>新闻<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">https://www.hao123.com</span> <span class="attr">name</span>=<span class="string">tj_trhao123</span> <span class="attr">class</span>=<span class="string">mnav</span>&gt;</span>hao123<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://map.baidu.com</span> <span class="attr">name</span>=<span class="string">tj_trmap</span> <span class="attr">class</span>=<span class="string">mnav</span>&gt;</span>地图<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://v.baidu.com</span> <span class="attr">name</span>=<span class="string">tj_trvideo</span> <span class="attr">class</span>=<span class="string">mnav</span>&gt;</span>视频<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://tieba.baidu.com</span> <span class="attr">name</span>=<span class="string">tj_trtieba</span> <span class="attr">class</span>=<span class="string">mnav</span>&gt;</span>贴吧<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">noscript</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://www.baidu.com/bdorz/login.gif?login&amp;amp;tpl</span>=<span class="string">mn&amp;amp;u</span>=<span class="string">http%3A%2F%2Fwww.baidu.com%2f%3fbdorz_come%3d1</span> <span class="attr">name</span>=<span class="string">tj_login</span> <span class="attr">class</span>=<span class="string">lb</span>&gt;</span>登录<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;/<span class="name">noscript</span>&gt;</span> <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"><span class="variable language_">document</span>.<span class="title function_">write</span>(<span class="string">&#x27;&lt;a href=&quot;http://www.baidu.com/bdorz/login.gif?login&amp;tpl=mn&amp;u=&#x27;</span>+ <span class="built_in">encodeURIComponent</span>(<span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">href</span>+ (<span class="variable language_">window</span>.<span class="property">location</span>.<span class="property">search</span> === <span class="string">&quot;&quot;</span> ? <span class="string">&quot;?&quot;</span> : <span class="string">&quot;&amp;&quot;</span>)+ <span class="string">&quot;bdorz_come=1&quot;</span>)+ <span class="string">&#x27;&quot; name=&quot;tj_login&quot; class=&quot;lb&quot;&gt;登录&lt;/a&gt;&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">                </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">//www.baidu.com/more/</span> <span class="attr">name</span>=<span class="string">tj_briicon</span> <span class="attr">class</span>=<span class="string">bri</span> <span class="attr">style</span>=<span class="string">&quot;display: block;&quot;</span>&gt;</span>更多产品<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">ftCon</span>&gt;</span> <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">ftConw</span>&gt;</span> <span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">lh</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://home.baidu.com</span>&gt;</span>关于百度<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://ir.baidu.com</span>&gt;</span>About Baidu<span class="tag">&lt;/<span class="name">a</span>&gt;</span> <span class="tag">&lt;/<span class="name">p</span>&gt;</span> <span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">cp</span>&gt;</span><span class="symbol">&amp;copy;</span>2017<span class="symbol">&amp;nbsp;</span>Baidu<span class="symbol">&amp;nbsp;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://www.baidu.com/duty/</span>&gt;</span>使用百度前必读<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="symbol">&amp;nbsp;</span> <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">http://jianyi.baidu.com/</span> <span class="attr">class</span>=<span class="string">cp-feedback</span>&gt;</span>意见反馈<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="symbol">&amp;nbsp;</span>京ICP证030173号<span class="symbol">&amp;nbsp;</span> <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">//www.baidu.com/img/gs.gif</span>&gt;</span> <span class="tag">&lt;/<span class="name">p</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span> <span class="tag">&lt;/<span class="name">body</span>&gt;</span> <span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>我们发现打印出来的内容很复杂看不懂，没有关系，因为这是HTML（超文本语言）,我们之后会简单介绍，现在回到程序自身，</p>
+<p>get函数有几个参数：</p>
+<p>1.url:即我们请求的网站的网址，是必要参数，填在第一位；</p>
+<p>2.headers:可选参数，请求头文件，输入要求字典形式，有时我们在打印网页源代码时，没有报错，但打印不出信息，可能就是User-Agent的问题，这时就需要添加一个带User-Agent的headers文件；</p>
+<p>3.params:可选参数，请求参数，输入要求字典形式，如在搜索时设置kw=小狗；</p>
+<p>4.verify：可选参数，ssl证书验证，输入是bool类型，有时候在访问网站时会报SSLError,这时候我们就可以通过设置verify参数值为false,在请求是不验证网站的ca证书，设置完以后运行时可能会出现warning，如果看着不顺眼，可以加上</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib3</span><br><span class="line">urllib3.disable_warnings() </span><br></pre></td></tr></table></figure>
+<p>去掉警告；</p>
+<p>5.timeout:可选参数，get再申请访问时，所用时间如果超过timeout设置的值，就会返回timeoutError；</p>
+<p>6.proxies:可选参数，有时候因为一些原因，你的IP地址可能会被网站封了，禁止你访问，这时我们就需要用该参数，使用代理IP访问网站；</p>
+<p>在用get申请访问时，有时会因为网络不良或连接不好无法请求到网站,遇到这种情况可以在get前加上<code>requests.adapters.DEFAULT_RETRIES = 5</code></p>
+<p>设置如果连接不上重新连接的次数，可以搭配get的timeout参数 使用，设置例如30s连接不上重新连接。</p>
+<p>使用requests方法后，会返回一个response对象，其存储了服务器响应的内容，在输出resp响应时，如果选择直接输出，输出的是状态码：如果输出<Response [200]>，则说明连接网站成功，如果输出<Response [400]>，则说明没有连接上。</Response></Response></p>
+<p>在输出resp时，也可以选择输出resp.text，输出响应的内容，也就是申请访问的网页的源代码，有时我们在输出的时候得到的结果中会有很多看不懂的字符，那是因为windows系统默认的字符集是GBK，而网页源代码所使用的字符集并不一定是GBK，例如在上面的输出中我们发现在第二行有一个 <code>charset=utf-8</code> ，说明百度网页源代码使用的字符集是utf-8，这时我们只要在输出之前设置<code>resp.encoding=&quot;utf-8&quot;</code>即可正确输出源代码内容。</p>
+<h2 id="三-第一次反爬"><a href="#三-第一次反爬" class="headerlink" title="三.第一次反爬"></a>三.第一次反爬</h2><p>我们用电脑浏览器登录www.baidu.com，鼠标右键查看网页源代码，发现看到的源代码很长很长，和我们之前获得的根本不一样，</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">百度网页实际源代码部分截取</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;head&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;s_top_wrap&quot;</span> <span class="attr">class</span>=<span class="string">&quot;s-top-wrap s-isindex-wrap &quot;</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;s-top-nav&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;s-center-box&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;u&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">&quot;toindex&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/&quot;</span>&gt;</span>百度首页<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;javascript:;&quot;</span> <span class="attr">name</span>=<span class="string">&quot;tj_settingicon&quot;</span> <span class="attr">class</span>=<span class="string">&quot;pf&quot;</span>&gt;</span>设置<span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">&quot;c-icon c-icon-triangle-down&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;https://passport.baidu.com/v2/?login&amp;tpl=mn&amp;u=http%3A%2F%2Fwww.baidu.com%2F&amp;sms=5&quot;</span> <span class="attr">name</span>=<span class="string">&quot;tj_login&quot;</span> <span class="attr">class</span>=<span class="string">&quot;lb&quot;</span> <span class="attr">onclick</span>=<span class="string">&quot;return false;&quot;</span>&gt;</span>登录<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;bdpfmenu&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;s-top-left&quot;</span> <span class="attr">class</span>=<span class="string">&quot;s-top-left-new s-isindex-wrap&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;http://news.baidu.com&quot;</span> <span class="attr">target</span>=<span class="string">&quot;_blank&quot;</span> <span class="attr">class</span>=<span class="string">&quot;mnav c-font-normal c-color-t&quot;</span>&gt;</span>新闻<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;https://www.hao123.com?</span></span></span><br></pre></td></tr></table></figure>
+<p>而且仔细观察之前获得的数据，发现一些网页上有的元素其中没有，例如百度热搜，说明我们被反爬了，百度网站没有让我们获取我们想要的信息，其实解决的办法很简单，就是利用之前说过的get函数的可选参数headers,鼠标右击百度网页检查-network，刷新网页，随便点开一个文件点开headers，拉到最下方request headers，我们会找到一个user-agent，我们把它复制下来，设置为headers作为参数发给网站：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">headers=&#123;</span><br><span class="line">    <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">resp=requests.get(url,headers=headers)</span><br></pre></td></tr></table></figure>
+<p>​    这之后再打印网站信息，就会发现和在浏览器中打开的一样啦。</p>
+
+    </div>
+
+    
+    
+    
+
+    <div>
+      
+        <div>
+  
+    <div style="text-align:center;color: #555;font-size:18px;">End~~ <i class="fa fa-paw"></i> 撒花ฅ&gt;ω&lt;*ฅ花撒</div>
+  
+</div>
+
+      
+    </div>
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i>
+ python</a>
+              <a href="/tags/%E7%88%AC%E8%99%AB/" rel="tag"><i class="fa fa-tag"></i>
+ 爬虫</a>
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"><i class="fa fa-tag"></i>
+ 技术</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/09/26/python%E7%88%AC%E8%99%AB%E5%85%A5%E9%97%A8/" rel="prev" title="python爬虫入门">
+                  <i class="fa fa-chevron-left"></i> python爬虫入门
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/10/04/%E4%B8%80%E6%96%87%E6%90%9E%E6%87%82%E5%AF%BC%E8%88%AA%E7%94%B5%E6%96%87-1/" rel="next" title="一文搞懂导航电文">
+                  一文搞懂导航电文 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="valine-comments"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">擎天小猪</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">25k</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共11.1k字</span>
+</div>
+    </div>
+  </footer>
+
+  <script src="https://soyawww.github.io/live2d/autoload.js"></script>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","cdn":"//https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+
+
+<script class="next-config" data-name="valine" type="application/json">{"enable":true,"appId":"wJLcM7FPVSGJ1ZLuSOemre8u-gzGzoHsz","appKey":"dAFwcWfz4iDB5gVZIYw1E0uL","serverURLs":"https://wjlcm7fp.lc-cn-n1-shared.com","placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":true,"comment_count":true,"recordIP":true,"enableQQ":true,"requiredFields":[],"el":"#valine-comments","path":"/2022/09/27/python-requests%E5%BA%93%E5%85%A5%E9%97%A8/"}</script>
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.valine.el)
+    .then(() => NexT.utils.getScript(
+      'https://fastly.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js',
+      { condition: window.Valine }
+    ))
+    .then(() => {
+      new Valine(CONFIG.valine);
+    });
+});
+</script>
+
+</body>
+  <script src="https://zhulizhe666.github.io/live2d/autoload.js"></script>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>
+
+<script src="live2d-widget/autoload.js"></script>
+
+<!-- 雪花特效2 -->
+<script type="text/javascript" src="/js/snow2.js"></script>

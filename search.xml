@@ -547,4 +547,100 @@ C_{is}轨道倾角正弦调和校正振幅</script><p>G24是卫星编号,后面4
         <tag>技术</tag>
       </tags>
   </entry>
+  <entry>
+    <title>把你的程序变成exe</title>
+    <url>/2022/12/05/%E6%8A%8A%E4%BD%A0%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%8F%98%E6%88%90exe/</url>
+    <content><![CDATA[<p>出门在外没带电脑，想在没安装python的电脑上运行程序怎么办？看看人家C语言，编译运行完天然自带一个.exe文件，在哪都能运行，python作为一门万能的语言，自然也有能力解决这个问题，本文教你如何快速将写好的.py文件转为.exe文件。</p>
+<span id="more"></span>
+<p>​
+要想实现今天这个功能，我们需要一个第三方的python模块--pyinstaller，下载方法很简单，直接在电脑cmd命令行窗口或pycharm编译器的terminal窗口输入：</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">pip <span class="keyword">install</span> pyinstaller</span><br></pre></td></tr></table></figure>
+<p>即可。</p>
+<p>​
+下载完这个模块，那么你已经完成了任务的50%了，例如我们想打包new.py文件，只需在terminal窗口输入：</p>
+<figure class="highlight haxe"><table><tr><td class="code"><pre><span class="line">pyinstaller -F <span class="keyword">new</span><span class="type"></span>.py</span><br></pre></td></tr></table></figure>
+<p>执行上面命令，将看到详细的生成过程。当生成完成后，将会在此 app
+目录下看到多了一个 dist 目录，并在该目录下看到有一个 app.exe
+文件，这就是使用 PyInstaller 工具生成的 exe
+程序。注意到我在pyinstaller后面加了一个-F，这是表示指定生成单独的 exe
+文件,下表是一些常用的命令。</p>
+<table>
+<colgroup>
+<col style="width: 31%">
+<col style="width: 68%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>-h，--help</th>
+<th>查看该模块的帮助信息</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>-F，-onefile</td>
+<td>产生单个的可执行文件</td>
+</tr>
+<tr class="even">
+<td>-D，--onedir</td>
+<td>产生一个目录（包含多个文件）作为可执行程序</td>
+</tr>
+<tr class="odd">
+<td>-a，--ascii</td>
+<td>不包含 Unicode 字符集支持</td>
+</tr>
+<tr class="even">
+<td>-d，--debug</td>
+<td>产生 debug 版本的可执行文件</td>
+</tr>
+<tr class="odd">
+<td>-w，--windowed，--noconsolc</td>
+<td>指定程序运行时不显示命令行窗口（仅对 Windows 有效）</td>
+</tr>
+<tr class="even">
+<td>-c，--nowindowed，--console</td>
+<td>指定使用命令行窗口运行程序（仅对 Windows 有效）</td>
+</tr>
+<tr class="odd">
+<td>-o DIR，--out=DIR</td>
+<td>指定 spec 文件的生成目录。如果没有指定，则默认使用当前目录来生成
+spec 文件</td>
+</tr>
+<tr class="even">
+<td>-p DIR，--path=DIR</td>
+<td>设置 Python 导入模块的路径（和设置 PYTHONPATH
+环境变量的作用相似）。也可使用路径分隔符（Windows 使用分号，Linux
+使用冒号）来分隔多个路径</td>
+</tr>
+<tr class="odd">
+<td>-n NAME，--name=NAME</td>
+<td>指定项目（产生的
+spec）名字。如果省略该选项，那么第一个脚本的主文件名将作为 spec
+的名字</td>
+</tr>
+</tbody>
+</table>
+<h2 id="重点">重点</h2>
+<p>本人在第一次尝试将文件打包成exe文件时，报了如下图的错：</p>
+<figure>
+<img src="/2022/12/05/%E6%8A%8A%E4%BD%A0%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%8F%98%E6%88%90exe/image-20221205165650124.png" alt="image-20221205165650124">
+<figcaption aria-hidden="true">image-20221205165650124</figcaption>
+</figure>
+<p>上网查了很久，有说配置环境变量的，有说重启电脑的，有说重装pyinstaller模块的，各种参差不齐，但都不能解决我的问题。</p>
+<p>但最后还是找到了一种解决办法，在系统的cmd命令行中使用次命令，但需要在前面加一个python
+-m，完整代码如下：</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line"><span class="keyword">python</span> -<span class="keyword">m</span> PyInstaller -F D:\<span class="keyword">new</span>.<span class="keyword">py</span></span><br></pre></td></tr></table></figure>
+<p>注意路径尽量不要有中文，之后就可以欢快的运行了。</p>
+<figure>
+<img src="/2022/12/05/%E6%8A%8A%E4%BD%A0%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%8F%98%E6%88%90exe/image-20221205170359467.png" alt="image-20221205170359467">
+<figcaption aria-hidden="true">image-20221205170359467</figcaption>
+</figure>
+<p>结果：</p>
+<p><img src="/2022/12/05/%E6%8A%8A%E4%BD%A0%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%8F%98%E6%88%90exe/image-20221205170455135.png" alt="image-20221205170455135" style="zoom:150%;"></p>
+<p>本次的内容就到这里了，最近比较忙，好久没更博客了，今天刚好有空，水一次博文，感谢大家支持ღ(
+´･ᴗ･` )</p>
+]]></content>
+      <tags>
+        <tag>python</tag>
+      </tags>
+  </entry>
 </search>

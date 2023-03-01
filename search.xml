@@ -791,4 +791,153 @@ Layer的缩写，可以理解为http+ssl，经由 http进行通信，但利用 s
         <tag>web</tag>
       </tags>
   </entry>
+  <entry>
+    <title>条条XPATH通罗马</title>
+    <url>/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/</url>
+    <content><![CDATA[<h2 id="如果说正则表达式是暴力美学，万物皆可匹配，那么Xpath更像是针对XML文档的一把手术刀，精准的帮你一层层剥开XML文档修饰的外壳，直达元素所在。"><a href="#如果说正则表达式是暴力美学，万物皆可匹配，那么Xpath更像是针对XML文档的一把手术刀，精准的帮你一层层剥开XML文档修饰的外壳，直达元素所在。" class="headerlink" title="如果说正则表达式是暴力美学，万物皆可匹配，那么Xpath更像是针对XML文档的一把手术刀，精准的帮你一层层剥开XML文档修饰的外壳，直达元素所在。"></a>如果说正则表达式是暴力美学，万物皆可匹配，那么Xpath更像是针对XML文档的一把手术刀，精准的帮你一层层剥开XML文档修饰的外壳，直达元素所在。</h2><span id="more"></span>
+<p><strong>XPath</strong>(XML Path Language) 是一门在 XML 文档中查找信息的语言。XML 指可扩展标记语言（Extensible Markup Language）。</p>
+<p>XML 被设计用来传输和存储数据，不用于表现和展示数据，HTML 则用来表现数据。</p>
+<p>但现在也可用于HTML文档的搜索。</p>
+<p>下面我们通过python的lxml库，使用Xpath对HTML进行解析</p>
+<p>lxml库是第三方库需要进行安装：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install lxml</span><br></pre></td></tr></table></figure>
+<p>在使用lxml库时我们这样调用，使用其中的etree模块：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br></pre></td></tr></table></figure>
+<p>注意在引用etree时编译器可能会表上红色下划线，但其实程序可以正常运行，并不会报错,如果想要解决的话可以这样写：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> html</span><br><span class="line">etree=html.etree</span><br></pre></td></tr></table></figure>
+<p>安装完成后我们就可以开始进行XPath的学习了。</p>
+<p>XML文档和HTML文档可以看成一颗树，上面有许多的节点，下面给出XPath解析该树的一些常用规则(摘自<a href="https://www.runoob.com/xpath/xpath-syntax.html">菜鸟教程</a>)</p>
+<h3 id="选取节点"><a href="#选取节点" class="headerlink" title="选取节点"></a>选取节点</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">表达式</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">nodename</td>
+<td style="text-align:left">选取此节点的所有子节点。</td>
+</tr>
+<tr>
+<td style="text-align:left">/</td>
+<td style="text-align:left">从根节点选取（取子节点）。</td>
+</tr>
+<tr>
+<td style="text-align:left">//</td>
+<td style="text-align:left">从匹配选择的当前节点选择文档中的节点，而不考虑它们的位置（取子孙节点）。</td>
+</tr>
+<tr>
+<td style="text-align:left">.</td>
+<td style="text-align:left">选取当前节点。</td>
+</tr>
+<tr>
+<td style="text-align:left">..</td>
+<td style="text-align:left">选取当前节点的父节点。</td>
+</tr>
+<tr>
+<td style="text-align:left">@</td>
+<td style="text-align:left">选取属性。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">路径表达式</th>
+<th style="text-align:left">结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">bookstore</td>
+<td style="text-align:left">选取 bookstore 元素的所有子节点。</td>
+</tr>
+<tr>
+<td style="text-align:left">/bookstore</td>
+<td style="text-align:left">选取根元素 bookstore。注释：假如路径起始于正斜杠( / )，则此路径始终代表到某元素的绝对路径！</td>
+</tr>
+<tr>
+<td style="text-align:left">bookstore/book</td>
+<td style="text-align:left">选取属于 bookstore 的子元素的所有 book 元素。</td>
+</tr>
+<tr>
+<td style="text-align:left">//book</td>
+<td style="text-align:left">选取所有 book 子元素，而不管它们在文档中的位置。</td>
+</tr>
+<tr>
+<td style="text-align:left">bookstore//book</td>
+<td style="text-align:left">选择属于 bookstore 元素的后代的所有 book 元素，而不管它们位于 bookstore 之下的什么位置。</td>
+</tr>
+<tr>
+<td style="text-align:left">//@lang</td>
+<td style="text-align:left">选取名为 lang 的所有属性。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>是不是还没开始就感觉很复杂，不用担心，如果你要找的节点不是网页后期JavaScript渲染上去的，那么你可以这样获得其XPath路径：</p>
+<p>右键检查</p>
+<p><img src="/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/image-20230228231322042.png" alt="image-20230228231322042"></p>
+<p>点击圈起来的按钮</p>
+<p><img src="/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/image-20230228231441798.png" alt="image-20230228231441798"></p>
+<p>鼠标移到想要选中的元素上，单击</p>
+<p><img src="/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/image-20230228231801224.png" alt="image-20230228231801224"></p>
+<p>鼠标移到网页源码上的阴影区域，右键”复制”，”复制XPath”就可以啦。</p>
+<p>当然，现在大部分的网站都会进行JS渲染，很多元素我们都是不能直接在网页源代码里找到的，所以这种方法我们目前还不是很用的到。下面我们正式开始使用XPath解析HTML文档。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&lt;!Doctype html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">	&lt;meta http-equiv=<span class="string">&quot;Content-Type&quot;</span> content=<span class="string">&quot;text/html; charset=UTF-8&quot;</span> /&gt;</span><br><span class="line">	&lt;meta name=<span class="string">&quot;viewport&quot;</span> content=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span> /&gt;</span><br><span class="line">	&lt;title&gt;XML 语法 | 菜鸟教程&lt;/title&gt;</span><br><span class="line"></span><br><span class="line">  &lt;meta name=<span class="string">&#x27;robots&#x27;</span> content=<span class="string">&#x27;max-image-preview:large&#x27;</span> /&gt;</span><br><span class="line">&lt;link rel=<span class="string">&#x27;stylesheet&#x27;</span> <span class="built_in">id</span>=<span class="string">&#x27;classic-theme-styles-css&#x27;</span> href=<span class="string">&#x27;http://www.runoob.com/wp-includes/css/classic-themes.min.css?ver=1&#x27;</span> <span class="built_in">type</span>=<span class="string">&#x27;text/css&#x27;</span> media=<span class="string">&#x27;all&#x27;</span> /&gt;</span><br><span class="line">&lt;link rel=<span class="string">&quot;canonical&quot;</span> href=<span class="string">&quot;http://www.runoob.com/xml/xml-syntax.html&quot;</span> /&gt;</span><br><span class="line">&lt;meta name=<span class="string">&quot;keywords&quot;</span> content=<span class="string">&quot;XML 语法&quot;</span>&gt;</span><br><span class="line">&lt;meta name=<span class="string">&quot;description&quot;</span> content=<span class="string">&quot;XML 语法规则   XML 的语法规则很简单，且很有逻辑。这些规则很容易学习，也很容易使用。  XML 文档必须有根元素 XML 必须包含根元素，它是所有其他元素的父元素，比如以下实例中 root 就是根元素：   [mycode3 type=&amp;#039;xml&amp;#039;]         .....     [/mycode3]   以下实例中 note 是根元素：    [mycode3 type=&amp;#039;xml&amp;#039;..&quot;</span>&gt;</span><br><span class="line">		</span><br><span class="line">	&lt;link rel=<span class="string">&quot;shortcut icon&quot;</span> href=<span class="string">&quot;https://static.runoob.com/images/favicon.ico&quot;</span>&gt;</span><br><span class="line">	&lt;link rel=<span class="string">&quot;stylesheet&quot;</span> href=<span class="string">&quot;/wp-content/themes/runoob/style.css?v=1.170&quot;</span> <span class="built_in">type</span>=<span class="string">&quot;text/css&quot;</span> media=<span class="string">&quot;all&quot;</span> /&gt;	</span><br><span class="line">	&lt;link rel=<span class="string">&quot;stylesheet&quot;</span> href=<span class="string">&quot;https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css&quot;</span> media=<span class="string">&quot;all&quot;</span> /&gt;	</span><br><span class="line">  &lt;!--[<span class="keyword">if</span> gte IE <span class="number">9</span>]&gt;&lt;!--&gt;</span><br><span class="line">  &lt;script src=<span class="string">&quot;https://cdn.staticfile.org/jquery/2.0.3/jquery.min.js&quot;</span>&gt;&lt;/script&gt;</span><br><span class="line">  &lt;!--&lt;![endif]--&gt;</span><br><span class="line">  &lt;!--[<span class="keyword">if</span> lt IE <span class="number">9</span>]&gt;</span><br><span class="line">     &lt;script src=<span class="string">&quot;https://cdn.staticfile.org/jquery/1.9.1/jquery.min.js&quot;</span>&gt;&lt;/script&gt;</span><br><span class="line">     &lt;script src=<span class="string">&quot;https://cdn.staticfile.org/html5shiv/r29/html5.min.js&quot;</span>&gt;&lt;/script&gt;</span><br><span class="line">  &lt;![endif]--&gt;</span><br><span class="line">  &lt;link rel=<span class="string">&quot;apple-touch-icon&quot;</span> href=<span class="string">&quot;https://static.runoob.com/images/icon/mobile-icon.png&quot;</span>/&gt;</span><br><span class="line">  &lt;meta name=<span class="string">&quot;apple-mobile-web-app-title&quot;</span> content=<span class="string">&quot;菜鸟教程&quot;</span>&gt;</span><br><span class="line">&lt;/head&gt;</span><br></pre></td></tr></table></figure>
+<p>这是菜鸟教程网页的一部分源码，我们想要把他变成可供XPath解析的HTML文档，有以下两种方式：</p>
+<h3 id="一-将str类型的text转为HTML"><a href="#一-将str类型的text转为HTML" class="headerlink" title="一.将str类型的text转为HTML"></a>一.将str类型的text转为HTML</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">text=<span class="string">&quot;&lt;head&gt;......&lt;/head&gt;&quot;</span></span><br><span class="line"></span><br><span class="line">html=etree.HTML(text)</span><br></pre></td></tr></table></figure>
+<h3 id="二-将代码存在test-html文件里"><a href="#二-将代码存在test-html文件里" class="headerlink" title="二.将代码存在test.html文件里"></a>二.将代码存在test.html文件里</h3><figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="attr">htmel</span>=etree.parse(<span class="string">&#x27;./test.heml&#x27;</span>,etree.HTMLParser)</span><br></pre></td></tr></table></figure>
+<p>转化完毕之后，我们就需要按上述的规则来解析HTML文档了。</p>
+<p>和一般的树一样，HTML节点树的节点之间也有一下几种关系：父节点，子节点，先辈节点，后代节点，我们正是以此为依据来一点一点的解析节点树来获得我们所要的内容的。</p>
+<h3 id="所有节点"><a href="#所有节点" class="headerlink" title="所有节点"></a>所有节点</h3><p>我们通常使用//来获得所有符合要求的节点，如果我们想要获得所有节点，可以：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">result=html.xpath(<span class="string">&#x27;//*&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(result)</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<p><img src="/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/image-20230301001455649.png" alt="image-20230301001455649"></p>
+<p>得到了所有的节点。*代表对节点无限制条件，返回的结果是一个列表，列表里的元素均是Element类型，后面跟着节点的名字。</p>
+<h3 id="子节点"><a href="#子节点" class="headerlink" title="子节点"></a>子节点</h3><p>子节点或者子孙节点我们可以使用/或//来获得，其中/获得的是当前节点的直接子节点，而//获得的是当前节点的所有子孙结点。例如我们获取第一层的所有子节点:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">result=html.xpath(<span class="string">&#x27;/*&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>结果为：</p>
+<p><img src="/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/image-20230301081519838.png" alt="image-20230301081519838"></p>
+<p>只有一个节点，也就是第一层的html节点。</p>
+<p>而使用//*则能获得第一层往下的所有子孙节点，也就是所有的节点。</p>
+<h3 id="父节点"><a href="#父节点" class="headerlink" title="父节点"></a>父节点</h3><p>想要查找上一层的父节点也很简单，我们可以使用..来完成，</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">result=html.xpath(<span class="string">&#x27;//meta[@name=&quot;keywords&quot;]&#x27;</span>)</span><br><span class="line">result=result[<span class="number">0</span>].xpath(<span class="string">&quot;..&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(result)</span><br></pre></td></tr></table></figure>
+<p>这段代码中我们先找了name属性为keywords的meta节点，再寻找他的父亲节点，结果如下;</p>
+<p><img src="/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/image-20230301112720948.png" alt="image-20230301112720948"></p>
+<p>得到了head节点</p>
+<p>我们同样可以使用parent::来寻找父亲节点：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">result=html.xpath(<span class="string">&#x27;//meta[@name=&quot;keywords&quot;]&#x27;</span>)</span><br><span class="line">result=result[<span class="number">0</span>].xpath(<span class="string">&quot;parent::*&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(result)</span><br></pre></td></tr></table></figure>
+<h3 id="属性匹配"><a href="#属性匹配" class="headerlink" title="属性匹配"></a>属性匹配</h3><p>XPath语法中，采用@来匹配节点的属性值以进行筛选</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">result=html.xpath(<span class="string">&#x27;//meta[@name]&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(result)</span><br></pre></td></tr></table></figure>
+<p>上述代码筛出了所有含有name属性的meta节点，结果如下</p>
+<p><img src="/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/image-20230301114051765.png" alt="image-20230301114051765"></p>
+<p>但如果仅仅这样去筛选的话，范围太大了，所以我们需要对具体属性的值进行筛选：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">result=html.xpath(<span class="string">&#x27;//meta[@name=&quot;robots&quot;]&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(result)</span><br></pre></td></tr></table></figure>
+<p>结果为：</p>
+<p><img src="/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/image-20230301190834237.png" alt="image-20230301190834237"></p>
+<p>就定位到了</p>
+<p><img src="/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/image-20230301190959434.png" alt="image-20230301190959434"></p>
+<p>这个meta节点，注意定位时属性值要加上””或’’。</p>
+<p>如果你在匹配值是有多个节点属性值相同，那么就不能在使用上面的方法了</p>
+<h3 id="文本获取"><a href="#文本获取" class="headerlink" title="文本获取"></a>文本获取</h3><p>在网络爬虫中，我们往往关注的是标签里的文本内容，例如</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&lt;div <span class="keyword">class</span>=<span class="string">&quot;tab&quot;</span>  <span class="built_in">id</span>=<span class="string">&quot;cate0&quot;</span>&gt;&lt;i <span class="keyword">class</span>=<span class="string">&quot;fa fa-reorder&quot;</span>&gt;&lt;/i&gt; 全部教程&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>我们想要获取div节点中所夹的”全部教程”四字，可以使用text()方法：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">txt=html.xpath(<span class="string">&#x27;//text()&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(txt)</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/image-20230301193250578.png" alt="image-20230301193250578"></p>
+<h3 id="属性获取"><a href="#属性获取" class="headerlink" title="属性获取"></a>属性获取</h3><p>属性的获取和属性的匹配其实有点像，只不过少去了[]方括号，</p>
+<p>还是用上面的div节点为例，我们要获得i节点的class属性，可以这样：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">class_value=html.xpath(<span class="string">&#x27;//i/@class&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(class_value)</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/02/28/%E6%9D%A1%E6%9D%A1XPATH%E9%80%9A%E7%BD%97%E9%A9%AC/image-20230301195428121.png" alt="image-20230301195428121"></p>
+<h2 id="后面还有一些复杂的操作，本章篇幅有限，我们以后再做讨论，Thanks♪-･ω･-ﾉ"><a href="#后面还有一些复杂的操作，本章篇幅有限，我们以后再做讨论，Thanks♪-･ω･-ﾉ" class="headerlink" title="后面还有一些复杂的操作，本章篇幅有限，我们以后再做讨论，Thanks♪(･ω･)ﾉ"></a>后面还有一些复杂的操作，本章篇幅有限，我们以后再做讨论，Thanks♪(･ω･)ﾉ</h2>]]></content>
+      <tags>
+        <tag>python</tag>
+        <tag>爬虫</tag>
+        <tag>web</tag>
+      </tags>
+  </entry>
 </search>

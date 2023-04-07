@@ -1066,4 +1066,496 @@ UA。它包含了一个特征字符串，用来让网络协议的对端来识别
         <tag>爬虫</tag>
       </tags>
   </entry>
+  <entry>
+    <title>那年，我们一起爬过的文件</title>
+    <url>/2023/03/08/%E9%82%A3%E5%B9%B4%EF%BC%8C%E6%88%91%E4%BB%AC%E4%B8%80%E8%B5%B7%E7%88%AC%E8%BF%87%E7%9A%84%E6%96%87%E4%BB%B6/</url>
+    <content><![CDATA[<h2 id="大家学习爬虫是为了爬哪些东西呢作者学习爬虫肯定是为了批量下载一些学习资源啊本文就来探讨一下怎么存储获得的学习资源">大家学习爬虫是为了爬哪些东西呢？作者学习爬虫，肯定是为了批量下载一些"学习资源"啊。本文就来探讨一下，怎么存储获得的学习资源。</h2>
+<span id="more"></span>
+<h3 id="txt文本文件存储">TXT文本文件存储</h3>
+<p>文本，不仅是我们日常生活最常见的数据，应该也是我们在爬虫中遇到的最多的数据类型了，小说，数据，往往都是以文本的形式藏在网页源代码之中。</p>
+<p>通常，对于文本数据，我们习惯用TXT文件去存储。</p>
+<p>要想去操作一个文本文件，其他文件也一样，实现创建，添加，修改，等操作，我们首先应该打开这个文件，打开文件的方法很简单，就是使用python自带的open()函数，常用的语法是：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(filename,mode) <span class="keyword">as</span> f:</span><br><span class="line">	file_operation</span><br></pre></td></tr></table></figure>
+<p>with语法会保证在语句段结束的最后，自动调用一个exit方法，在这里就是结束后会自动加上一个close()方法，关闭打开的文件，</p>
+<p>open函数常用的有两个参数，第一个参数是filename，是打开文件的路径，是一个字符串，第二个参数mode代表对文件进行操作的模式，具体有如下几种：</p>
+<p><strong>r</strong>:read，以只读格式打开文件，只能读取数据，不能写入；</p>
+<p><strong>rb</strong>:以二进制只读格式打开文件；</p>
+<p><strong>r+</strong>:以读写格式打开文件，既可以读入数据，也可以写入；</p>
+<p><strong>rb+</strong>:以二进制读写格式打开文件；</p>
+<p><strong>w</strong>:write，以写入方式打开一个文件，文件存在则覆盖已有内容，文件不存在的新建文件；</p>
+<p><strong>wb</strong>:以二进制写入方式打开一个文件；</p>
+<p><strong>w+</strong>:以读写方式打开一个文件，文件存在则覆盖已有内容，文件不存在的新建文件；</p>
+<p><strong>wb+</strong>:以二进制读写方式打开一个文件；</p>
+<p><strong>a</strong>:以追加方式打开一个文件，如果文件已存在，则在文件的最后追加内容，如果文件不存在，则新建文件；</p>
+<p><strong>ab</strong>:以二进制追加方式打开一个文件；</p>
+<p><strong>a+</strong>:以读写方式打开一个文件，文件打开时是追加模式；</p>
+<p><strong>ab+</strong>:以二进制读写方式打开一个文件，文件打开时是追加模式；</p>
+]]></content>
+      <tags>
+        <tag>python</tag>
+        <tag>知识</tag>
+        <tag>文件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一文搞定GPS接收机定位</title>
+    <url>/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/</url>
+    <content><![CDATA[<h2 id="结课大作业希望对大家有所帮助">结课大作业，希望对大家有所帮助</h2>
+<span id="more"></span>
+<h2 id="什么是gps接收机">什么是GPS接收机</h2>
+<p>GPS接收机是接收全球定位系统卫星信号并确定地面空间位置的仪器。GPS卫星发送的导航定位信号，是一种可供无数用户共享的信息资源。对于陆地、
+海洋和空间的广大用户，只要拥有能够接收、跟踪、变换和测量GPS信号的接收设备，
+即GPS信号接收机。</p>
+<p>一般的GPS接收机长这样：</p>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/resize,m_lfit,w_536,limit_1.jpeg" alt="GPS 接收机">
+<figcaption aria-hidden="true">GPS 接收机</figcaption>
+</figure>
+<p>而我们今天要用的就比较简陋了，它长这样</p>
+<p>使用其usb串口与电脑相连，并进行相关环境的配置，我们就可以用电脑接受其数据流了。</p>
+<h2 id="数据流解读">数据流解读</h2>
+<h3 id="gps接收机协议">GPS接收机协议</h3>
+<p>我们利用GPS接收机接收到的数据流格式是基于NMEA-0183
+协议，NMEA协议是为了在不同的GPS（全球定位系统）导航设备中建立统一的BTCM（海事无线电技术委员会）标准，由美国国家海洋电子协会（NMEA-The
+National Marine Electronics
+Associa-tion）制定的一套通讯协议。GPS接收机根据NMEA-0183协议的标准规范，将位置、速度等信息通过串口传送到PC机、MCU等设备。</p>
+<p>NMEA-0183 协议是目前 GPS 接收机上使用最广泛的协议，大多数常见的 GPS
+接收机、GPS 数据处理软件、导航软件都遵守或者至少兼容这个协议。</p>
+<p><strong>数据格式</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$信息类型，x，x，x，x，x，x，x，x，x，x，x，x，x</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>$</code> 为起始标志；</li>
+<li><code>,</code> 为域分隔符；</li>
+<li><code>*</code> 为校验和识别符，其后两位数为校验和，代表了
+<code>$</code>和 <code>*</code>
+之间所有字符的按位异或值（不包括这两个字符）；</li>
+<li><code>\r\n</code> 为终止符（不可见），所有的语句必须以来结束，也就是
+ASCII 字符的“回车”（十六进制的 <code>0D</code>）和“换行”（十六进制的
+<code>0A</code>）。</li>
+</ul>
+<p>NMEA-0183 协议定义的语句非常多，但是常用的或者说兼容性最广的语句只有
+GPGGA、GPGSA、GPGSV、GPRMC、GPVTG、GPGLL 等。下面给出这些常用 NMEA 0183
+语句的字段定义解释：</p>
+<h3 id="gprmc"><strong>GPRMC</strong></h3>
+<p>Recommended Minimum Specific GPS/TRANSIT Data（RMC）推荐定位信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="variable">$GPRMC</span>,&lt;1&gt;,&lt;2&gt;,&lt;3&gt;,&lt;4&gt;,&lt;5&gt;,&lt;6&gt;,&lt;7&gt;,&lt;8&gt;,&lt;9&gt;,&lt;10&gt;,&lt;11&gt;,&lt;12&gt;*hh</span><br></pre></td></tr></table></figure>
+<p>各字段描述如下：</p>
+<ul>
+<li><code>&lt;1&gt;</code> UTC 时间，格式
+hhmmss.ssss，代表时分秒.毫秒</li>
+<li><code>&lt;2&gt;</code> 定位状态，A=有效定位，V=无效定位</li>
+<li><code>&lt;3&gt;</code> 纬度 ddmm.mmmm（度分）格式（前面的 0
+也将被传输）</li>
+<li><code>&lt;4&gt;</code> 纬度半球 N（北纬）或 S（南纬）</li>
+<li><code>&lt;5&gt;</code> 经度 dddmm.mmmm（度分）格式（前面的 0
+也将被传输）</li>
+<li><code>&lt;6&gt;</code> 经度半球 E（东经）或 W（西经）</li>
+<li><code>&lt;7&gt;</code> 地面速率（000.0~999.9 节，前面的 0
+也将被传输）</li>
+<li><code>&lt;8&gt;</code>
+地面航向（方位角），等效于二维罗盘（000.0~359.9
+度，以真北为参考基准，前面的 0 也将被传输）</li>
+<li><code>&lt;9&gt;</code> UTC 日期，DDMMYY（日月年）格式</li>
+<li><code>&lt;10&gt;</code> 磁偏角（000.0~180.0 度，前面的 0
+也将被传输）</li>
+<li><code>&lt;11&gt;</code> 磁偏角方向，E（东）或 W（西）</li>
+<li><code>&lt;12&gt;</code> 模式指示（仅 NMEA0183 3.0
+版本输出，A=自主定位，D=差分，E=估算，N=数据无效）</li>
+<li>最后两个字节是校验和</li>
+</ul>
+<p>注意：</p>
+<ul>
+<li>如果字段 4 的值等于 N，则字段 3 的值等于 ddmm.mmmmmm</li>
+<li>如果字段 4 的值等于 S，则字段 3 的值等于 -ddmm.mmmmmm</li>
+<li>如果字段 6 的值等于 E，则字段 5 的值等于 ddmm.mmmmmm</li>
+<li>如果字段 6 的值等于 W，则字段 5 的值等于 -ddmm.mmmmmm</li>
+<li>十进制北纬度数 = dd + mm.mmmmmm/60</li>
+<li>十进制南纬度数 = -(dd + mm.mmmmmm/60)</li>
+<li>十进制东经度数 = ddd + mm.mmmmmm/60</li>
+<li>十进制西经度数 = -(ddd + mm.mmmmmm/60)</li>
+</ul>
+<h3 id="gpgga"><strong>GPGGA</strong></h3>
+<p>Global Positioning System Fix Data（GGA）GPS定位信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="variable">$GPGGA</span>,&lt;1&gt;,&lt;2&gt;,&lt;3&gt;,&lt;4&gt;,&lt;5&gt;,&lt;6&gt;,&lt;7&gt;,&lt;8&gt;,&lt;9&gt;,M,&lt;10&gt;,M,&lt;11&gt;,&lt;12&gt;*hh</span><br></pre></td></tr></table></figure>
+<p>各字段描述如下：</p>
+<ul>
+<li><code>&lt;1&gt;</code> UTC 时间，hhmmss（时分秒）格式</li>
+<li><code>&lt;2&gt;</code> 纬度 ddmm.mmmm（度分）格式（前面的 0
+也将被传输）</li>
+<li><code>&lt;3&gt;</code> 纬度半球 N（北纬）或 S（南纬）</li>
+<li><code>&lt;4&gt;</code> 经度 dddmm.mmmm（度分）格式（前面的 0
+也将被传输）</li>
+<li><code>&lt;5&gt;</code> 经度半球 E（东经）或 W（西经）</li>
+<li><code>&lt;6&gt;</code> GPS
+状态：0=未定位，1=非差分定位，2=差分定位，6=正在估算</li>
+<li><code>&lt;7&gt;</code> 正在使用解算位置的卫星数量（00~12）（前面的 0
+也将被传输）</li>
+<li><code>&lt;8&gt;</code> HDOP 水平精度因子（0.5~99.9）</li>
+<li><code>&lt;9&gt;</code> 海拔高度（-9999.9~99999.9）</li>
+<li><code>&lt;10&gt;</code> 地球椭球面相对大地水准面的高度</li>
+<li><code>&lt;11&gt;</code>
+差分时间（从最近一次接收到差分信号开始的秒数，如果不是差分定位将为空）</li>
+<li><code>&lt;12&gt;</code> 差分站 ID 号 0000~1023（前面的 0
+也将被传输，如果不是差分定位将为空）</li>
+</ul>
+<h3 id="gpgsa"><strong>GPGSA</strong></h3>
+<p>GPS DOP and Active Satellites（GSA）当前卫星信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="variable">$GPGSA</span>,&lt;1&gt;,&lt;2&gt;,&lt;3&gt;,&lt;3&gt;,,,,,&lt;3&gt;,&lt;3&gt;,&lt;3&gt;,&lt;4&gt;,&lt;5&gt;,&lt;6&gt;,&lt;7&gt;</span><br></pre></td></tr></table></figure>
+<p>各字段描述如下：</p>
+<ul>
+<li><code>&lt;1&gt;</code> 模式 ：M = 手动， A = 自动。</li>
+<li><code>&lt;2&gt;</code> 定位型式 1 = 未定位， 2 = 二维定位， 3 =
+三维定位。</li>
+<li><code>&lt;3&gt;</code> PRN 数字：01 至 32
+表天空使用中的卫星编号，最多可接收 12 颗卫星信息。</li>
+<li><code>&lt;4&gt;</code> PDOP 位置精度因子（0.5~99.9）</li>
+<li><code>&lt;5&gt;</code> HDOP 水平精度因子（0.5~99.9）</li>
+<li><code>&lt;6&gt;</code> VDOP 垂直精度因子（0.5~99.9）</li>
+<li><code>&lt;7&gt;</code> Checksum（检查位）</li>
+</ul>
+<h3 id="gpvtg"><strong>GPVTG</strong></h3>
+<p>Track Made Good and Ground Speed（VTG）地面速度信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="variable">$GPVTG</span>,&lt;1&gt;,T,&lt;2&gt;,M,&lt;3&gt;,N,&lt;4&gt;,K,&lt;5&gt;*hh</span><br></pre></td></tr></table></figure>
+<p>各字段描述如下：</p>
+<ul>
+<li><code>&lt;1&gt;</code> 以真北为参考基准的地面航向（000~359
+度，前面的 0 也将被传输）</li>
+<li><code>&lt;2&gt;</code> 以磁北为参考基准的地面航向（000~359
+度，前面的 0 也将被传输）</li>
+<li><code>&lt;3&gt;</code> 地面速率（000.0~999.9 节，前面的 0
+也将被传输）</li>
+<li><code>&lt;4&gt;</code> 地面速率（0000.0~1851.8
+公里/小时，前面的0也将被传输）</li>
+<li><code>&lt;5&gt;</code> 模式指示（仅 NMEA 0183 3.0
+版本输出，A=自主定位，D=差分，E=估算，N=数据无效）</li>
+</ul>
+<h3 id="gpgsv"><strong>GPGSV</strong></h3>
+<p>GPS Satellites in View（GSV）可见卫星信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="variable">$GPGSV</span>, &lt;1&gt;,&lt;2&gt;,&lt;3&gt;,&lt;4&gt;,&lt;5&gt;,&lt;6&gt;,&lt;7&gt;,?&lt;4&gt;,&lt;5&gt;,&lt;6&gt;,&lt;7&gt;,&lt;8&gt;</span><br></pre></td></tr></table></figure>
+<p>各字段描述如下：</p>
+<ul>
+<li><code>&lt;1&gt;</code> GSV语句的总数</li>
+<li><code>&lt;2&gt;</code> 本句GSV的编号</li>
+<li><code>&lt;3&gt;</code> 可见卫星的总数，00 至 12。</li>
+<li><code>&lt;4&gt;</code> 卫星编号， 01 至 32。</li>
+<li><code>&lt;5&gt;</code> 卫星仰角， 00 至 90 度。</li>
+<li><code>&lt;6&gt;</code> 卫星方位角， 000 至 359 度。实际值。</li>
+<li><code>&lt;7&gt;</code> 讯号噪声比（C/No）， 00 至 99
+dB；无表未接收到讯号。</li>
+<li><code>&lt;8&gt;</code> Checksum（检查位）</li>
+</ul>
+<p>注意：第 <code>&lt;4&gt;,&lt;5&gt;,&lt;6&gt;,&lt;7&gt;</code>
+项个别卫星会重复出现，每行最多有四颗卫星。其余卫星信息会于次一行出现，若未使用，这些字段会空白。</p>
+<p>更多关于0183协议详细的介绍，可以查看<a href="https://icofchina.com/d/file/xiazai/2020-09-22/20f1b42b3a11ac52089caf3603b43fb5.pdf">《CASIC多模卫星导航接收机协议规范》</a></p>
+<p><strong>在了解了GPS接收机数据的结构后，我们就可以对我们所需要的数据进行筛选并读取了</strong></p>
+<h2 id="读入定位信息简单版">读入定位信息(简单版)</h2>
+<p>我们先进行本地数据的读取，用GPS接收机接收到数据后，我们先将数据保存在本地，而后进行读取。</p>
+<p>要想读取USB串口的数据，我们先要在电脑上安装相应的驱动，CH340转串口芯片支持的平台驱动齐全，支持Windows/Linux/Android/MacOS/WinCE
+等各主流系统。下面就给出Windows平台下驱动官网链接和简要说明：</p>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230406102157347.png" alt="image-20230406102157347">
+<figcaption aria-hidden="true">image-20230406102157347</figcaption>
+</figure>
+<p><a href="https://www.wch.cn/download/CH341SER_EXE.html">下载链接</a></p>
+<p>下载好后，双击EXE文件运行，弹出安装成功则说明已经完成安装。</p>
+<p>将驱动安装完毕后，我们要想接收数据还需要一个软件，下载地址如下：</p>
+<p><a href="http://www.daxia.com/download/sscom.rar">下载链接</a></p>
+<p>下载好后打开就是一个这样的界面</p>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230406104926222.png" alt="image-20230406104926222">
+<figcaption aria-hidden="true">image-20230406104926222</figcaption>
+</figure>
+<p>该软件是大虾丁丁写的一个串口调试器，在查找串口助手时都推荐使用这个，这个软件是一个免费的，一些关于该软件的问题可以查看<a href="http://www.sscom.vip/">sscom网站</a>，将接收到的数据保存在本地后，就可以在本地读取我们需要的信息了。</p>
+<p>读取定位信息，我们需要的定位信息是经纬度，最好加上此次定位的时间，根据之前的介绍，这些数据在GPRMC,GPGGA中都有所体现，我们直接读取即可，python代码如下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">read_data</span>(<span class="params">file_path</span>):  <span class="comment"># 定义读取数据的函数</span></span><br><span class="line">    IsLineBlank = <span class="number">0</span>  <span class="comment"># 常量，标记读入的行是否为空，为空则说明已经读取完毕，停止继续读入</span></span><br><span class="line"></span><br><span class="line">    Llist = []  <span class="comment"># 存储经度</span></span><br><span class="line">    Blist = []  <span class="comment"># 存储纬度</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(file_path, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">while</span> IsLineBlank != <span class="number">1</span>:  <span class="comment"># 读入的行不为空</span></span><br><span class="line">            line = f.readline()  <span class="comment"># 逐行读入数据</span></span><br><span class="line">            <span class="keyword">if</span> line == <span class="string">&#x27;&#x27;</span>:  <span class="comment"># 判断该行是否为空，是则将IsLineBlank设置为1</span></span><br><span class="line">                IsLineBlank = <span class="number">1</span></span><br><span class="line">            seprated_line = line.split(<span class="string">&#x27;,&#x27;</span>)  <span class="comment"># 0183协议数据之间以,分隔</span></span><br><span class="line">            <span class="keyword">if</span> seprated_line[<span class="number">0</span>] == <span class="string">&#x27;$GPRMC&#x27;</span> <span class="keyword">and</span> seprated_line[<span class="number">2</span>] == <span class="string">&#x27;A&#x27;</span>:  <span class="comment"># 找到数据行，A表示有效定位，方可使用本次数据。</span></span><br><span class="line">                <span class="comment"># 根据0183协议格式找到需要的数据</span></span><br><span class="line">                B = seprated_line[<span class="number">3</span>]  <span class="comment"># 纬度</span></span><br><span class="line">                Btype = seprated_line[<span class="number">4</span>]  <span class="comment"># 纬度的类型，N/S</span></span><br><span class="line">                L = seprated_line[<span class="number">5</span>]  <span class="comment"># 经度</span></span><br><span class="line">                Ltype = seprated_line[<span class="number">6</span>]  <span class="comment"># 经度的类型，W/E</span></span><br><span class="line">                UTCtime = seprated_line[<span class="number">1</span>]  <span class="comment"># UTC时间</span></span><br><span class="line">                UTCdate = seprated_line[<span class="number">9</span>]  <span class="comment"># UTC日期</span></span><br><span class="line">                Llist.append(<span class="built_in">int</span>(L[:<span class="number">3</span>]) + <span class="built_in">float</span>(L[<span class="number">3</span>:]) / <span class="number">60</span>)  <span class="comment"># 存储经度</span></span><br><span class="line">                Blist.append(<span class="built_in">int</span>(B[:<span class="number">2</span>]) + <span class="built_in">float</span>(B[<span class="number">2</span>:]) / <span class="number">60</span>)  <span class="comment"># 存储纬度</span></span><br><span class="line"></span><br><span class="line">                <span class="built_in">print</span>(</span><br><span class="line">                    <span class="string">f&quot;20<span class="subst">&#123;UTCdate[<span class="number">4</span>:]&#125;</span>.<span class="subst">&#123;UTCdate[<span class="number">2</span>:<span class="number">4</span>]&#125;</span>.<span class="subst">&#123;UTCdate[:<span class="number">2</span>]&#125;</span> <span class="subst">&#123;UTCtime[:<span class="number">2</span>]&#125;</span>:<span class="subst">&#123;UTCtime[<span class="number">2</span>:<span class="number">4</span>]&#125;</span>:<span class="subst">&#123;UTCtime[<span class="number">4</span>:]&#125;</span>&quot;</span>)  <span class="comment"># 格式化打印时间</span></span><br><span class="line">                <span class="built_in">print</span>(<span class="string">f&quot;B=<span class="subst">&#123;Btype&#125;</span> <span class="subst">&#123;B[:<span class="number">2</span>]&#125;</span>&#x27;<span class="subst">&#123;B[<span class="number">2</span>:]&#125;</span>,L=<span class="subst">&#123;Ltype&#125;</span> <span class="subst">&#123;L[:<span class="number">3</span>]&#125;</span>&#x27;<span class="subst">&#123;L[<span class="number">3</span>:]&#125;</span>&quot;</span>)  <span class="comment"># 格式化打印经纬度</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    read_data(<span class="string">&quot;SAVE2023-03-31_10-20-43.DAT&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="读入定位信息进阶版">读入定位信息(进阶版)</h2>
+<p>单单只是将数据保存在本地然后读入显然是不够的，那么有没有办法可以边连接串口接受数据边提取出我们需要的数据的，答案是肯定的，不过要用到一些python串口编程的知识。</p>
+<h3 id="pyserial串口编程">pySerial串口编程</h3>
+<p>pySerial 是 Python 中用于操作串口的第三方模块，它支持
+Windows、Linux、OSX、BSD等多个平台。如果要使用 pySerial
+模块，首先必须保证 Python 版本高于 Python 2.7 或者 Python
+3.4。另外，如果你是用的是 Windows 系统，那必须使用 Win7 及以上的版本。
+pySerial 的安装很简单，只需要执行一条命令：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">pip install pyserial</span><br></pre></td></tr></table></figure>
+<p>安装完成后，只需要在 Python 代码中使用 import serial
+语句导入该模块即可。</p>
+<h4 id="确认端口号">确认端口号</h4>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> serial</span><br><span class="line"><span class="keyword">import</span> serial.tools.list_ports</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 获取所有串口设备实例。</span></span><br><span class="line"><span class="comment"># 如果没找到串口设备，则输出：“无串口设备。”</span></span><br><span class="line"><span class="comment"># 如果找到串口设备，则依次输出每个设备对应的串口号和描述信息。</span></span><br><span class="line">ports_list = <span class="built_in">list</span>(serial.tools.list_ports.comports())</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(ports_list) &lt;= <span class="number">0</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;无串口设备。&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;可用的串口设备如下：&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> comport <span class="keyword">in</span> ports_list:</span><br><span class="line">        <span class="built_in">print</span>(<span class="built_in">list</span>(comport)[<span class="number">0</span>], <span class="built_in">list</span>(comport)[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230406224100614.png" alt="image-20230406224100614">
+<figcaption aria-hidden="true">image-20230406224100614</figcaption>
+</figure>
+<p>正是我们GPS接收机的串口</p>
+<h4 id="打开串口">打开串口</h4>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">ser = serial.Serial(port=<span class="string">&quot;COM5&quot;</span>, baudrate=<span class="number">9600</span>,bytesize=<span class="number">8</span>,stopbits=<span class="number">1</span>)  <span class="comment"># 打开COM5，配置相关参数</span></span><br><span class="line"><span class="keyword">if</span> ser.isOpen():  <span class="comment"># 判断串口是否成功打开</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;打开串口成功。&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(ser.name)  <span class="comment"># 输出串口号</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;打开串口失败。&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>在使用 serial.Serial()
+创建串口实例时，可以传入的参数很多，常用的参数如下（默认值用<strong>加粗</strong>标记）：</p>
+<ul>
+<li>port - 串口设备名或 <strong>None</strong>。</li>
+<li>baudrate - 波特率，可以是50, 75, 110, 134, 150, 200, 300, 600, 1200,
+1800, 2400, 4800, <strong>9600</strong>, 19200, 38400, 57600, 115200,
+230400, 460800, 500000, 576000, 921600, 1000000, 1152000, 1500000,
+2000000, 2500000, 3000000, 3500000, 4000000。</li>
+<li>bytesize - 数据位，可取值为：FIVEBITS, SIXBITS, SEVENBITS,
+<strong>EIGHTBITS</strong>。</li>
+<li>parity - 校验位，可取值为：<strong>PARITY_NONE</strong>,
+PARITY_EVEN, PARITY_ODD, PARITY_MARK, PARITY_SPACE。</li>
+<li>stopbits - 停止位，可取值为：<strong>STOPBITS_ONE</strong>,
+STOPBITS_ONE_POINT_FIVE, STOPBITS_TOW。</li>
+<li>xonxoff - 软件流控，可取值为 True, <strong>False</strong>。</li>
+<li>rtscts - 硬件（RTS/CTS）流控，可取值为 True,
+<strong>False</strong>。</li>
+<li>dsr/dtr - 硬件（DSR/DTR）流控，可取值为 True,
+<strong>False</strong>。</li>
+<li>timeout - 读超时时间，可取值为 <strong>None</strong>, 0
+或者其他具体数值（支持小数）。当设置为 None
+时，表示阻塞式读取，一直读到期望的所有数据才返回；当设置为 0
+时，表示非阻塞式读取，无论读取到多少数据都立即返回；当设置为其他数值时，表示设置具体的超时时间（以秒为单位），如果在该时间内没有读取到所有数据，则直接返回。</li>
+<li>write_timeout: 写超时时间，可取值为 <strong>None</strong>, 0
+或者其他具体数值（支持小数）。参数值起到的效果参考 timeout 参数。</li>
+</ul>
+<p>我们根据sscom界面上的参数配置即可</p>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230406230348646.png" alt="image-20230406230348646">
+<figcaption aria-hidden="true">image-20230406230348646</figcaption>
+</figure>
+<h4 id="读取串口数据">读取串口数据</h4>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    com_input = ser.read(<span class="number">1000</span>)</span><br><span class="line">    <span class="keyword">if</span> com_input:  <span class="comment"># 如果读取结果非空，则输出</span></span><br><span class="line">        <span class="built_in">print</span>(com_input.decode())</span><br><span class="line"></span><br><span class="line">ser.close()</span><br></pre></td></tr></table></figure>
+<p>输出如下</p>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230406230941385.png" alt="image-20230406230941385">
+<figcaption aria-hidden="true">image-20230406230941385</figcaption>
+</figure>
+<p>关于 read() 方法，需要了解如下几点： ① read()
+方法默认一次读取一个字节，可以通过传入参数指定每次读取的字节数。 ②
+read() 方法会将读取的内容作为返回值，类型为 bytes。 ③
+在打开串口时，可以为 read() 方法配置超时时间。</p>
+<h4 id="以上就是python串口编程的一些基础操作如果想要了解更多-pyserial-细节可以参考-pyserial官方文档结合上之前的数据读取我们就可以实时的接收数据流并处理了">以上就是python串口编程的一些基础操作，如果想要了解更多
+pySerial 细节，可以参考 <a href="https://pyserial.readthedocs.io/en/latest/pyserial.html">pySerial官方文档</a>，结合上之前的数据读取，我们就可以实时的接收数据流并处理了</h4>
+<h2 id="将经纬度信息在地图上显示出来基于百度地图api">将经纬度信息在地图上显示出来(基于百度地图API)</h2>
+<p>百度地图API是为开发者免费提供的一套基于百度地图服务的应用接口，包括JavaScript
+API、Web服务API、Android SDK、iOS
+SDK、定位SDK、车联网API、LBS云等多种开发工具与服务，提供基本地图展现、搜索、定位、逆/地理编码、路线规划、LBS云存储与检索等功能，适用于PC端、移动端、服务器等多种设备，多种操作系统下的地图应用开发。</p>
+<h3 id="准备工作">准备工作</h3>
+<p>在使用百度地图之前，我们需要拥有一个自己的百度账号，并申请注册成为百度开发者，然后我们需要创建一个浏览器端应用，就可以获取到一个唯一的服务秘钥（AK），具体操作如下：</p>
+<p>控制台-&gt;应用管理-&gt;我的应用-&gt;创建应用</p>
+<p>应用名自取，选择浏览器端，之后点击创建即可。</p>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230406204027293.png" alt="image-20230406204027293">
+<figcaption aria-hidden="true">image-20230406204027293</figcaption>
+</figure>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230406204102705.png" alt="image-20230406204102705">
+<figcaption aria-hidden="true">image-20230406204102705</figcaption>
+</figure>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230406204127169.png" alt="image-20230406204127169">
+<figcaption aria-hidden="true">image-20230406204127169</figcaption>
+</figure>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230406205256087.png" alt="image-20230406205256087">
+<figcaption aria-hidden="true">image-20230406205256087</figcaption>
+</figure>
+<h3 id="静态图">静态图</h3>
+<p>百度地图静态图API，可实现将百度地图以图片形式嵌入到您的网页中。您只需发送HTTP请求访问百度地图静态图服务，便可在网页上以图片形式显示您的地图。静态图API较之JavaScript
+API载入的动态网站，既能满足基本的地图信息浏览，又能加快网页访问速度。</p>
+<p>通过给<strong><code>&lt;img&gt;</code></strong>标签设置src属性即可将地图图片显示在网页中。用户可以指定图片的尺寸、地图的显示范围（包含中心点和缩放级别），还可以放置一些覆盖物在地图上，以生成符合需求的地图图片。</p>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230406211205927.png" alt="image-20230406211205927">
+<figcaption aria-hidden="true">image-20230406211205927</figcaption>
+</figure>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230406211250221.png" alt="image-20230406211250221">
+<figcaption aria-hidden="true">image-20230406211250221</figcaption>
+</figure>
+<p>让我们来详细阅读一下其服务文档</p>
+<h4 id="服务地址">服务地址</h4>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">https:<span class="regexp">//</span>api.map.baidu.com<span class="regexp">/staticimage/</span>v2 <span class="regexp">//</span>GET请求</span><br></pre></td></tr></table></figure>
+<p>组成说明：</p>
+<ul>
+<li>域名：<a href="http://api.map.baidu.com/">https://api.map.baidu.com</a></li>
+<li>服务名：staticimage</li>
+<li>版本号：v2</li>
+</ul>
+<p>服务参数列表</p>
+<table>
+<colgroup>
+<col style="width: 14%">
+<col style="width: 4%">
+<col style="width: 7%">
+<col style="width: 73%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">参数名</th>
+<th style="text-align: center;">必选</th>
+<th style="text-align: center;">默认值</th>
+<th style="text-align: center;">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">ak</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">无</td>
+<td style="text-align: center;">用户的访问密钥。支持浏览器端和服务端ak，网页应用推荐使用
+服务端ak(sn校验方式）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">mcode</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">无</td>
+<td style="text-align: center;">安全码。若为Android/IOS SDK的ak,
+该参数必需。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">width</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">400</td>
+<td style="text-align: center;">图片宽度。取值范围：(0,
+1024]。Scale=2,取值范围：(0, 512]。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">height</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">300</td>
+<td style="text-align: center;">图片高度。取值范围：(0,
+1024]。Scale=2,取值范围：(0, 512]。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">center</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">北京</td>
+<td style="text-align: center;">地图中心点位置，参数可以为经纬度坐标或名称。坐标格式：lng<经度>，lat<纬度>，例如116.43213,38.76623。</纬度></经度></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">zoom</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">地图级别。高清图范围[3,
+18]；低清图范围[3,19]</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">copyright</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">pl</td>
+<td style="text-align: center;">静态图版权样式，0表示log+文字描述样式，1表示纯文字描述样式，默认为0。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">dpiType</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">pl</td>
+<td style="text-align: center;">手机屏幕类型。取值范围:{ph：高分屏，pl：低分屏(默认)}，高分屏即调用高清地图，低分屏为普通地图。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">coordtype</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">bd09ll</td>
+<td style="text-align: center;">静态图的坐标类型。支持wgs84ll（wgs84坐标）/gcj02ll（国测局坐标）/bd09ll（百度经纬度）/bd09mc（百度墨卡托）。默认bd09ll（百度经纬度）</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">scale</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">null</td>
+<td style="text-align: center;">返回图片大小会根据此标志调整。取值范围为1或2：
+1表示返回的图片大小为size= width * height;
+2表示返回图片为(width<em>2)</em>(height <em>2)，且zoom加1
+注：如果zoom为最大级别，则返回图片为（width</em>2）<em>（height</em>2），zoom不变。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">bbox</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">null</td>
+<td style="text-align: center;">地图视野范围。格式：minX,minY;maxX,maxY。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">markers</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">null</td>
+<td style="text-align: center;">标注，可通过经纬度或地址/地名描述；多个标注之间用竖线分隔。</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">markerStyles</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">null</td>
+<td style="text-align: center;">与markers有对应关系。markerStyles可设置默认图标样式和自定义图标样式。其中设置默认图标样式时，可指定的属性包括size,label和color；设置自定义图标时，可指定的属性包括url，注意，设置自定义图标时需要先传-1以此区分默认图标。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">labels</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">null</td>
+<td style="text-align: center;">标签，可通过经纬度或地址/地名描述；多个标签之间用竖线分隔。坐标格式：lng<经度>，lat<纬度>，例如116.43213,38.76623。</纬度></经度></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">labelStyles</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">null</td>
+<td style="text-align: center;">标签样式 content,
+fontWeight,fontSize,fontColor,bgColor, border。与labels一一对应。</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">paths</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">null</td>
+<td style="text-align: center;">折线，可通过经纬度或地址/地名描述；多个折线用竖线"|"分隔；每条折线的点用分号";"分隔；点坐标用逗号","分隔。坐标格式：lng<经度>，lat<纬度>，例如116.43213,38.76623。</纬度></经度></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">pathStyles</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">null</td>
+<td style="text-align: center;">折线样式
+color,weight,opacity[,fillColor]。</td>
+</tr>
+</tbody>
+</table>
+<p>是不是感觉很复杂，没事看个例子就行了：</p>
+<figure class="highlight dns"><table><tr><td class="code"><pre><span class="line">https://api.map.baidu.com/staticimage/v2?ak=E4805d16520de693a3fe707cdc962045&amp;center=<span class="number">116.403874</span>,<span class="number">39.914889</span>&amp;width=<span class="number">400</span>&amp;height=<span class="number">300</span>&amp;zoom=<span class="number">11</span>&amp;markers=<span class="number">116.288891</span>,<span class="number">40.004261</span>|<span class="number">116.487812</span>,<span class="number">40.017524</span>|<span class="number">116.525756</span>,<span class="number">39.967111|116</span>.<span class="number">536105,39</span>.<span class="number">872374|116</span>.<span class="number">442968,39</span>.<span class="number">797022|116</span>.<span class="number">270494,39</span>.<span class="number">851993|116</span>.<span class="number">275093,39</span>.<span class="number">935251|116</span>.<span class="number">383177,39</span>.<span class="number">923743</span>&amp;markerStyles=l,<span class="keyword">A</span>|m,B|l,C|l,D|m,E|,|l,G|m,H</span><br><span class="line">// 返回一张在北京地图上添加多个普通标注点的地图图片</span><br></pre></td></tr></table></figure>
+<ul>
+<li>AK就是你之前创建应用得到的秘钥，可以在我的应用处查看，</li>
+<li>center是地图的中心点位置，经纬度之间以逗号分隔，</li>
+<li>width&amp;height是地图的宽和高，单位是像素</li>
+<li>zoom是地图的级别，百度地图 API 中共有 19 个级别</li>
+</ul>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/e0951c20e1f84f52b8839ddfd76c9445.png#pic_center" alt="在这里插入图片描述">
+<figcaption aria-hidden="true">在这里插入图片描述</figcaption>
+</figure>
+<p>​ <strong>注意：</strong> ​ <strong>1、在项目中使用百度地图时，层级为 3
+时，世界地图大小已经和容器的大小一致；</strong> ​ <strong>2、级别 为 2
+时，地图的大小是容器的一半；</strong> ​ <strong>3、地图显示级别为 1
+时，地图的长宽大约为
+容器的四分之一，而且在使用时，特别不好找到地图；</strong> ​
+<strong>因此，我们在项目中使用百度地图时，一定要使用合适的地图层级。</strong></p>
+<ul>
+<li>markers就是你要标记的点的经纬度，多组经纬度之间以|分隔</li>
+<li>markerStyles与markers有对应关系。markerStyles可设置默认图标样式和自定义图标样式。这里我们就用它给的实例中的样式就行了。</li>
+</ul>
+<p>那么我们该怎么得到这个复杂的url呢？归根结底这个url就是在https://api.map.baidu.com/staticimage/v2这个服务地址的基础上添加了一些参数，有一些网络或者爬虫的知识就能很快的完成这个复杂的url的构造，不过这个url中还出现了？，&amp;以外的符号，所以并不能直接构造，建议还是用字符串拼接而成。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">ak = <span class="string">&quot;c2h0qrckzqLUIwLtcnc80OOTBgGrbpiV&quot;</span></span><br><span class="line">width = <span class="number">400</span></span><br><span class="line">height = <span class="number">300</span></span><br><span class="line">zoom = <span class="number">19</span></span><br><span class="line"></span><br><span class="line">url = <span class="string">f&quot;https://api.map.baidu.com/staticimage/v2?ak=<span class="subst">&#123;ak&#125;</span>&amp;center=<span class="subst">&#123;Llist[<span class="number">0</span>]&#125;</span>,<span class="subst">&#123;Blist[<span class="number">0</span>]&#125;</span>&amp;width=400&amp;height=300&amp;zoom=19&amp;markers=&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(Blist)):</span><br><span class="line">    url = url + <span class="string">f&quot;<span class="subst">&#123;Llist[i]&#125;</span>,<span class="subst">&#123;Blist[i]&#125;</span>&quot;</span></span><br><span class="line">    <span class="keyword">if</span> i != <span class="built_in">len</span>(Blist) - <span class="number">1</span>:</span><br><span class="line">        url = url + <span class="string">&quot;|&quot;</span></span><br><span class="line">url = url + <span class="string">&quot;&amp;markerStyles=l,A|m,B|l,C|l,D|m,E|,|l,G|m,H&quot;</span></span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230407112901379.png" alt="image-20230407112901379">
+<figcaption aria-hidden="true">image-20230407112901379</figcaption>
+</figure>
+<p>我们点击这个链接打开看一下是否能得到我们想要的地图</p>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230407112938430.png" alt="image-20230407112938430">
+<figcaption aria-hidden="true">image-20230407112938430</figcaption>
+</figure>
+<p>发现确实是成功了。那么我们想要将图片保存在本地，只需要用一些基础的爬虫知识就可以完成了：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;map.jpg&quot;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    resp = requests.get(url)</span><br><span class="line">    f.write(resp.content)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2023/04/04/%E4%B8%80%E6%96%87%E6%90%9E%E5%AE%9A%E5%AF%BC%E8%88%AA%E6%8E%A5%E6%94%B6%E6%9C%BA%E5%AE%9A%E4%BD%8D/image-20230407113124833.png" alt="image-20230407113124833">
+<figcaption aria-hidden="true">image-20230407113124833</figcaption>
+</figure>
+<p><strong>搞定！！</strong></p>
+]]></content>
+      <tags>
+        <tag>python</tag>
+        <tag>技术</tag>
+        <tag>GPS</tag>
+        <tag>接收机</tag>
+      </tags>
+  </entry>
 </search>
